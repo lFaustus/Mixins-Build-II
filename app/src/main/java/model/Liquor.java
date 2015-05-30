@@ -68,14 +68,14 @@ public class Liquor
         List<Liquor> liquors = new ArrayList<>();
         for(int i=0 ; i<number ; i++)
         {
-            if(previousTileType == -1)
+            if(previousTileType == -1 && random == -1)
             {
                 do
                 {
                     Random rand = new Random();
                     random = rand.nextInt(3);
 
-                }while(random == BIG_TILE);
+                }while(random == BIG_TILE && i!=0); //Big tile type can be added as the first tile type @ tile index 0
 
             }
 
