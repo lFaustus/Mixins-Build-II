@@ -110,7 +110,6 @@ public class MainMenu extends Fragment {
             {
                 recyclerAdapter.LoadMore(page);
                 recyclerAdapter.notifyItemInserted(page);
-
             }
         });
 
