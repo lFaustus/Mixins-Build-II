@@ -1,37 +1,37 @@
 package model;
 
-import android.util.Log;
-
-import org.apache.http.cookie.SM;
-
+import android.os.Parcel;
+import android.os.Parcelable;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by flux on 5/26/15.
  */
-public class Liquor
+public class Liquor implements Parcelable
 {
     private String Liquor_Name;
+    private String Liquor_Picture_URL;
+    private String Liquor_Description;
     private int TileType;
-    public static final int SMALL_TILE = 0;
-    public static final int LONG_TILE = 1;
-    public static final int BIG_TILE = 2;
-
+    private String TileColor;
+    private final String JSONDB_LIQUOR_NAME = "liquor_name";
+    private final String JSONDB_LIQUOR_PIC_URL = "liquor_url";
+    private final String JSONDB_LIQUOR_DESCRIPTION = "liquor_description";
+    private JSONObject JSONLiquor;
 
     public Liquor(String liquor_Name)
     {
         this.Liquor_Name = liquor_Name;
     }
 
-    public Liquor(String liquor_Name,int tileType)
+    public Liquor(String liquor_Name,int tileType,String tileColor)
     {
         this. Liquor_Name = liquor_Name;
         this.TileType = tileType;
-
+        this.TileColor = tileColor;
     }
 
     public Liquor()
@@ -39,14 +39,92 @@ public class Liquor
 
     }
 
-    public String getLiquor_Name()
+    public Liquor(JSONObject JSONLiquor)
+    {
+        this.JSONLiquor = JSONLiquor;
+        try
+        {
+            this.Liquor_Name = JSONLiquor.getString(JSONDB_LIQUOR_NAME);
+            this.Liquor_Description = JSONLiquor.getString(JSONDB_LIQUOR_DESCRIPTION);
+            this.Liquor_Picture_URL = JSONLiquor.getString(JSONDB_LIQUOR_PIC_URL);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+
+        }
+
+    }
+
+    private Liquor(Parcel parcel)
+    {
+       /* try
+        {
+            this.JSONLiquor = new JSONObject(parcel.readString());
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        }*/
+        this.Liquor_Name = parcel.readString();
+        this.Liquor_Description = parcel.readString();
+        this.Liquor_Picture_URL = parcel.readString();
+        this.TileType = parcel.readInt();
+        this.TileColor = parcel.readString();
+    }
+
+    public static Parcelable.Creator<Liquor> Creator = new Creator<Liquor>()
+    {
+        @Override
+        public Liquor createFromParcel(Parcel source)
+        {
+            return new Liquor(source);
+        }
+
+        @Override
+        public Liquor[] newArray(int size)
+        {
+            return new Liquor[size];
+        }
+    };
+
+    public String getLiquorName()
     {
         return Liquor_Name;
     }
 
-    public void setLiquor_Name(String liquor_Name)
+    public void setLiquorName(String liquor_Name)
     {
         Liquor_Name = liquor_Name;
+    }
+
+    public String getLiquorPictureURL()
+    {
+        return Liquor_Picture_URL;
+    }
+
+    public void setLiquorPictureURL(String liquor_Picture_URL)
+    {
+        Liquor_Picture_URL = liquor_Picture_URL;
+    }
+
+    public String getLiquorDescription()
+    {
+        return Liquor_Description;
+    }
+
+    public void setLiquorDescription(String liquor_Description)
+    {
+        Liquor_Description = liquor_Description;
+    }
+
+    public String getTileColor()
+    {
+        return TileColor;
+    }
+
+    public void setTileColor(String tileColor)
+    {
+        TileColor = tileColor;
     }
 
     public int getTileType()
@@ -54,95 +132,22 @@ public class Liquor
         return TileType;
     }
 
-    public void setTileType(int tileType)
+
+    @Override
+    public int describeContents()
     {
-        TileType = tileType;
+        return 0;
     }
 
-    public static List<Liquor> getAllLiquors(int number)
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
     {
-        int previousTileType = -1,count =0;
-        boolean bigFlag = false;
-        int random = -1;
-
-        List<Liquor> liquors = new ArrayList<>();
-        for(int i=0 ; i<number ; i++)
-        {
-            if(previousTileType == -1 && random == -1)
-            {
-                do
-                {
-                    Random rand = new Random();
-                    random = rand.nextInt(3);
-
-                }while(random == BIG_TILE && i!=0); //Big tile type can be added as the first tile type @ tile index 0
-
-            }
-
-            if(random == LONG_TILE)
-            {
-                liquors.add(new Liquor("Liquor Number: " + i, random));
-                if(previousTileType == -1)
-                {
-                    previousTileType = random;
-                    random = SMALL_TILE;
-                }
-                else
-                {
-                    //if(previousTileType == SMALL_TILE)
-                    //{
-                        previousTileType = random;
-                        random = SMALL_TILE;
-                        bigFlag = true;
-                    //}
-                }
-
-
-            }
-            else if(random == SMALL_TILE)
-            {
-                liquors.add(new Liquor("Liquor Number: " + i, random));
-
-                if(previousTileType == -1)
-                {
-                    previousTileType = random;
-                    random = LONG_TILE;
-                }
-                else
-                {
-                    if(previousTileType == LONG_TILE)
-                    {
-                        previousTileType = random;
-                        if(bigFlag == true)
-                        {
-                            random = BIG_TILE;
-                        }
-
-
-                    }
-                    else
-                    {
-                        //if(previousTileType == SMALL_TILE)
-                        //{
-                            //bigFlag = true;
-                            random = BIG_TILE;
-                        //}
-                            previousTileType = random;
-
-                    }
-                }
-            }
-            else
-            {
-                liquors.add(new Liquor("Liquor Number: " + i, random));
-                bigFlag = false;
-                previousTileType = -1;
-                random = -1;
-
-            }
-
-        }
-     return liquors;
+       // dest.writeString(JSONLiquor.toString());
+        dest.writeString(Liquor_Name);
+        dest.writeString(Liquor_Description);
+        dest.writeString(Liquor_Picture_URL);
+        dest.writeInt(TileType);
+        dest.writeString(TileColor);
     }
 
 }

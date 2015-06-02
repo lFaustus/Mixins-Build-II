@@ -6,15 +6,21 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.faustus.mixins.build2.R;
 
+import java.util.ArrayList;
+
+import adapters.EndlessStaggeredRecyclerOnScrollListener;
 import adapters.RecyclerStaggeredAdapter;
-import model.Liquor;
+import database.GenerateLiquors;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,17 +33,15 @@ import model.Liquor;
 public class MainMenu extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "MainMenu";
-    //private static final String ARG_PARAM2 = "param2";
+    private static final String FRAGMENT_TAG = "MainMenu";
+    private final String LIQUORS_TAG = "LIQUORS";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
    // private String mParam2;
-
     private RecyclerView recyclerStaggeredView;
     private StaggeredGridLayoutManager stgv;
     private RecyclerStaggeredAdapter recyclerAdapter;
-
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -52,7 +56,7 @@ public class MainMenu extends Fragment {
     public static MainMenu newInstance(String param1) {
         MainMenu fragment = new MainMenu();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(FRAGMENT_TAG, param1);
         //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -66,7 +70,7 @@ public class MainMenu extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getString(FRAGMENT_TAG);
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -76,13 +80,48 @@ public class MainMenu extends Fragment {
                              Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.staggeredgridview,container,false);
         recyclerStaggeredView = (RecyclerView)view.findViewById(R.id.staggeredgridview);
-        recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),Liquor.getAllLiquors(11));
+        return view;
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState == null)
+        {
+            GenerateLiquors.setMaterialPalette(getActivity().getResources().getStringArray(R.array.material_palette));
+            recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), GenerateLiquors.generateDrinks(11));
+            Toast.makeText(getActivity(),"First Time Loading list", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),savedInstanceState.getParcelableArrayList(LIQUORS_TAG));
+        }
+        recyclerStaggeredView.setAdapter(recyclerAdapter);
         stgv = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL);
         stgv.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        //recyclerStaggeredView.setHasFixedSize(true);
-        recyclerStaggeredView.setAdapter(recyclerAdapter);
         recyclerStaggeredView.setLayoutManager(stgv);
-        return view;
+        recyclerStaggeredView.addOnScrollListener(new EndlessStaggeredRecyclerOnScrollListener(stgv)
+        {
+            @Override
+            public void OnLoadMore(int page)
+            {
+                recyclerAdapter.LoadMore(page);
+                recyclerAdapter.notifyItemInserted(page);
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(LIQUORS_TAG,recyclerAdapter.getLiquorItems());
 
     }
 
