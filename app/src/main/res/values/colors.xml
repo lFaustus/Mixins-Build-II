@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <string-array name="material_palette">
+        <item>#3F51B5</item>
+        <item>#FF5252</item>
+        <item>#0091EA</item>
+        <item>#00BFA5</item>
+        <item>#4CAF50</item>
+        <item>#8BC3A4</item>
+        <item>#FF9800</item>
+        <item>#E65100</item>
+        <item>#FF6F00</item>
+        <item>#9C27B0</item>
+        <item>#D84315</item>
+        <item>#795548</item>
+        <item>#FF5722</item>
+        <item>#455A64</item>
+        <item>#FF4081</item>
+        <item>#2196F3</item>
+        <item>#673AB7</item>
+    </string-array>
+</resources>

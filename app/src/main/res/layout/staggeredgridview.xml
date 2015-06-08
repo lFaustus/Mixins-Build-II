@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -10,5 +12,45 @@
         android:id="@+id/staggeredgridview">
 
     </android.support.v7.widget.RecyclerView>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        fab:fab_expandDirection="down"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="right"
+        android:layout_marginTop="5dp"
+        >
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_side_button_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="#0091EA"
+            fab:fab_colorPressed="@color/white_pressed"
+            />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_side_button_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="#FF5722"
+            fab:fab_colorPressed="@color/white_pressed"
+
+            />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_side_button_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="#673AB7"
+            fab:fab_colorPressed="@color/white_pressed"
+            />
+
+
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </FrameLayout>

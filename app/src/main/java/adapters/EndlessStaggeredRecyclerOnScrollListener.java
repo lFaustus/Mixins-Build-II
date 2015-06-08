@@ -9,9 +9,9 @@ import android.util.Log;
  */
 public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerView.OnScrollListener
 {
+    private final int visibleThreshold = 5;
     private StaggeredGridLayoutManager mStaggeredgrid;
-    private int firstVisibleItem,VisibleItemCount,totalItemCount,current_page = 1;
-    private final int  visibleThreshold = 5;
+    private int firstVisibleItem, VisibleItemCount, totalItemCount, current_page = 1;
 
     public EndlessStaggeredRecyclerOnScrollListener(StaggeredGridLayoutManager staggeredgrid)
     {
@@ -22,17 +22,19 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
+        OnScrolled();
         firstVisibleItem = mStaggeredgrid.findFirstVisibleItemPositions(null)[0];
         VisibleItemCount = recyclerView.getChildCount();
         totalItemCount = mStaggeredgrid.getItemCount();
         current_page = totalItemCount;
         Log.i("ItemCount", "ItemCount " + totalItemCount);
-        Log.i("Childcount","childcount: "+VisibleItemCount);
-        Log.i("FirstPosition", "FirstPosition: " + firstVisibleItem);
+        Log.i("Childcount", "childcount: " + VisibleItemCount);
+        Log.i("FirstPosition", "FirstVisibleItemPosition: " + firstVisibleItem);
 
-        if((totalItemCount - VisibleItemCount) <= (firstVisibleItem + visibleThreshold))
+
+        if ((totalItemCount - VisibleItemCount) <= (firstVisibleItem + visibleThreshold))
         {
-            current_page ++;
+            current_page++;
             OnLoadMore(current_page);
         }
         /*if((VisibleItemCount + firstVisibleItem) >= totalItemCount)
@@ -45,4 +47,6 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
     }
 
     public abstract void OnLoadMore(int page);
+
+    public abstract void OnScrolled();
 }

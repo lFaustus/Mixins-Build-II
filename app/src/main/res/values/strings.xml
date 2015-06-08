@@ -6,23 +6,5 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="material_palette">
-        <item>#673AB7</item>
-        <item>#3F51B5</item>
-        <item>#FF5252</item>
-        <item>#FF4081</item>
-        <item>#9C27B0</item>
-        <item>#2196F3</item>
-        <item>#0091EA</item>
-        <item>#00BFA5</item>
-        <item>#4CAF50</item>
-        <item>#8BC3A4</item>
-        <item>#FF9800</item>
-        <item>#E65100</item>
-        <item>#FF6F00</item>
-        <item>#FF5722</item>
-        <item>#D84315</item>
-        <item>#795548</item>
-        <item>#455A64</item>
-    </string-array>
+
 </resources>
