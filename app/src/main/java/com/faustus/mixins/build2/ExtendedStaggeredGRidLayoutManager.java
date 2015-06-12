@@ -3,7 +3,6 @@ package com.faustus.mixins.build2;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-
 /**
  * Created by flux on 6/4/15.
  */
@@ -26,8 +25,8 @@ public class ExtendedStaggeredGRidLayoutManager extends StaggeredGridLayoutManag
     public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount)
     {
         super.onItemsAdded(recyclerView, positionStart, itemCount);
-        Log.i("position",positionStart+"");
-        Log.i("itemCount",itemCount+"");
+       // Log.i("position",positionStart+"");
+       // Log.i("itemCount",itemCount+"");
     }
 
    

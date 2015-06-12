@@ -6,13 +6,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.ExtendedStaggeredGRidLayoutManager;
 import com.faustus.mixins.build2.R;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -131,21 +134,22 @@ public class MainMenu extends Fragment implements View.OnClickListener
 
     private void initializeFloatingMenuAndButtons()
     {
-        //Log.i("testInitialise", "testInitialize");
-        for (Field f : R.class.getFields())
+        ViewGroup vg =(ViewGroup) getView().findViewWithTag("floatingactionsmenu");
+        Log.i("ChildCount", vg.getChildCount() + "");
+        for(int i = 0; i<vg.getChildCount(); i++)
         {
-            if (f.getName().contains("floating_side_button"))
+            try
             {
-                try
+                if (vg.getChildAt(i) instanceof FloatingActionButton && vg.getChildAt(i).getTag().equals("fab"))
                 {
-                    getView().findViewById(f.getInt(f.getName())).setOnClickListener(this);
-
-                } catch (IllegalAccessException e)
-                {
-                    e.printStackTrace();
+                    vg.getChildAt(i).setOnClickListener(this);
                 }
+            }catch(NullPointerException exp)
+            {
+                Log.i("FABIndex Exception","Tag not set at Button Index "+i);
             }
         }
+
     }
 
 

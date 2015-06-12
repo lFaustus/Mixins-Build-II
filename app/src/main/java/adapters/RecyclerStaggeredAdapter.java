@@ -1,6 +1,7 @@
 package adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,11 +9,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,8 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.software.shell.fab.ActionButton;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -32,9 +37,7 @@ import model.Liquor;
  */
 public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder>
 {
-    private static final int ACTION_BUTTON_ONE = 1;
-    private static final int ACTION_BUTTON_TWO = 2;
-    private static final int ACTION_BUTTON_THREE = 3;
+
     public static FloatingActionMenu Currentmenu = null;
     private static Activity context;
     private static ArrayList<FloatingActionMenu> menus = new ArrayList<>();
@@ -143,7 +146,7 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             //fabButton = (ActionButton) itemView.findViewById(R.id.fab_button);
 
 
-            Log.i("onCreateViewHolder", "OnCreateViewHolder");
+            //Log.i("onCreateViewHolder", "OnCreateViewHolder");
             SubActionButton.Builder builder = new SubActionButton.Builder(context);
             builder.setTheme(SubActionButton.THEME_DARK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
@@ -171,11 +174,14 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             ab3.setLayoutParams(params2);
 
 
-            ab1.setTag(ACTION_BUTTON_ONE);
+            ab1.setTag(R.id.ACTION_BUTTON_ONE, R.id.ACTION_BUTTON_ONE);
+            ab1.setId(R.id.ACTION_BUTTON_ONE);
             ab1.setOnClickListener(this);
-            ab2.setTag(ACTION_BUTTON_TWO);
+
             ab2.setOnClickListener(this);
-            ab3.setTag(ACTION_BUTTON_THREE);
+            ab2.setId(R.id.ACTION_BUTTON_TWO);
+            ab3.setTag(R.id.ACTION_BUTTON_THREE, R.id.ACTION_BUTTON_THREE);
+            ab3.setId(R.id.ACTION_BUTTON_THREE);
             ab3.setOnClickListener(this);
 
 
@@ -211,7 +217,9 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
                             }
 
                             Currentmenu = floatingActionMenu;
-
+                            //floatingActionMenu.getSubActionItems().get(2).view.setTag(R.id.ACTION_BUTTON_TWO);
+                            floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());
+                            //Toast.makeText(context,((Liquor)floatingActionMenu.getSubActionItems().get(2).view.getTag()).getLiquorName(),Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -229,15 +237,22 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         @Override
         public void onClick(View v)
         {
-            switch (((Integer) v.getTag()))
+            switch (v.getId())
             {
-                case ACTION_BUTTON_ONE:
+                case R.id.ACTION_BUTTON_ONE:
                     Toast.makeText(context, "This is Button one", Toast.LENGTH_SHORT).show();
                     break;
-                case ACTION_BUTTON_TWO:
-                    Toast.makeText(context, "This is Button two", Toast.LENGTH_SHORT).show();
+
+                case R.id.ACTION_BUTTON_TWO:
+                    View view = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    dialog.setView(view);
+                    ((TextView)view.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
+                    view.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor)v.getTag()).getTileColor()));
+                    dialog.create().show();
                     break;
-                case ACTION_BUTTON_THREE:
+
+                case R.id.ACTION_BUTTON_THREE:
                     Toast.makeText(context, "This is Button three", Toast.LENGTH_SHORT).show();
                     break;
             }
