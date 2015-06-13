@@ -1,4 +1,4 @@
-package adapters;
+package com.faustus.mixins.build2.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;

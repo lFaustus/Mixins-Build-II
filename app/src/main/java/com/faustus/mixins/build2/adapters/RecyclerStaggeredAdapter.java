@@ -1,4 +1,4 @@
-package adapters;
+package com.faustus.mixins.build2.adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,36 +7,26 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.faustus.mixins.build2.R;
+import com.faustus.mixins.build2.database.GenerateLiquors;
+import com.faustus.mixins.build2.model.Liquor;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.software.shell.fab.ActionButton;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-
-import database.GenerateLiquors;
-import model.Liquor;
 
 /**
  * Created by flux on 5/26/15.
  */
-public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder>
-{
+public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder> {
 
     public static FloatingActionMenu Currentmenu = null;
     private static Activity context;
@@ -45,8 +35,7 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
     private DisplayMetrics windowMetrics;
 
 
-    public RecyclerStaggeredAdapter(Activity activity, ArrayList<Liquor> liquorItems)
-    {
+    public RecyclerStaggeredAdapter(Activity activity, ArrayList<Liquor> liquorItems) {
         LiquorItems = liquorItems;
         context = activity;
         windowMetrics = context.getResources().getDisplayMetrics();
@@ -54,17 +43,13 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        //windowMetrics = parent.getResources().getDisplayMetrics();
-        //context = parent.getContext();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Log.i("onCreateViewHolder", "OnCreateViewHolder");
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.staggered_items, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position)
-    {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         if (LiquorItems.get(position).getTileType() == GenerateLiquors.SMALL_TILE) // small tile view
         {
@@ -74,7 +59,8 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             holder.Tile.setLayoutParams(layoutparams);
             StaggeredGridLayoutManager.LayoutParams layoutParams1 = ((StaggeredGridLayoutManager.LayoutParams) holder.Tile.getLayoutParams());
             layoutParams1.setFullSpan(false);
-        } else if (LiquorItems.get(position).getTileType() == GenerateLiquors.BIG_TILE)// big tile view
+        }
+        else if (LiquorItems.get(position).getTileType() == GenerateLiquors.BIG_TILE)// big tile view
         {
             ViewGroup.LayoutParams layoutparams = holder.Tile.getLayoutParams();
             layoutparams.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, windowMetrics.heightPixels, windowMetrics);
@@ -82,7 +68,8 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             holder.Tile.setLayoutParams(layoutparams);
             StaggeredGridLayoutManager.LayoutParams layoutParams1 = ((StaggeredGridLayoutManager.LayoutParams) holder.Tile.getLayoutParams());
             layoutParams1.setFullSpan(true);
-        } else //long tile view
+        }
+        else //long tile view
         {
             ViewGroup.LayoutParams layoutparams = holder.Tile.getLayoutParams();
             layoutparams.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, windowMetrics);
@@ -93,67 +80,61 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         }
 
         holder.txtview.setText(LiquorItems.get(position).getLiquorName());
-        holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
+        //holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
+        holder.Tile_label.setBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.img.setTag(LiquorItems.get(position));
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return LiquorItems.size();
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView)
-    {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
 
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder)
-    {
+    public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         if (Currentmenu != null)
             Currentmenu.close(true);
     }
 
-    public ArrayList<Liquor> getLiquorItems()
-    {
+    public ArrayList<Liquor> getLiquorItems() {
         return LiquorItems;
     }
 
-    public void LoadMore(int page)
-    {
-        //GenerateLiquors.setLastTileType(LiquorItems.get(LiquorItems.size()-1).getTileType());
+    public void LoadMore(int page) {
         GenerateLiquors.LoadDrinks(page, LiquorItems);
 
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView img;
         TextView txtview;
         CardView Tile;
+        FrameLayout Tile_label;
         //ActionButton fabButton;
 
-        public ViewHolder(View itemView)
-        {
+        public ViewHolder(View itemView) {
             super(itemView);
             img = (ImageView) itemView.findViewById(R.id.imageLiquor);
             txtview = (TextView) itemView.findViewById(R.id.textLiquor);
             Tile = (CardView) itemView.findViewById(R.id.card_view);
+            Tile_label = (FrameLayout) itemView.findViewById(R.id.tile_label);
             //fabButton = (ActionButton) itemView.findViewById(R.id.fab_button);
 
 
             //Log.i("onCreateViewHolder", "OnCreateViewHolder");
-            SubActionButton.Builder builder = new SubActionButton.Builder(context);
-            builder.setTheme(SubActionButton.THEME_DARK);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-            params.setMargins(10, 10, 10, 10); //button content margin
-            //builder.setLayoutParams(params);
-            FloatingActionButton.LayoutParams params2 = new FloatingActionButton.LayoutParams(30, 30);// Button size
-            params2.setMargins(10, 10, 10, 10);
+            // SubActionButton.Builder builder = new SubActionButton.Builder(context);
+            //FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            //params.setMargins(10, 10, 10, 10); //button content margin
+            //builder.setLayoutParams(params);//useless
+            FloatingActionButton.LayoutParams buttonparams = new FloatingActionButton.LayoutParams(30, 30);// Button size
+            buttonparams.setMargins(10, 10, 10, 10);
             //builder.setLayoutParams(params2);
             /*ImageView image1 = new ImageView(context);
             ImageView image2 = new ImageView(context);
@@ -169,9 +150,9 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             ab2.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_chat));
             ab3.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_video));
             ab1.setImageSize(20);
-            ab1.setLayoutParams(params2);
-            ab2.setLayoutParams(params2);
-            ab3.setLayoutParams(params2);
+            ab1.setLayoutParams(buttonparams);
+            ab2.setLayoutParams(buttonparams);
+            ab3.setLayoutParams(buttonparams);
 
 
             ab1.setTag(R.id.ACTION_BUTTON_ONE, R.id.ACTION_BUTTON_ONE);
@@ -204,28 +185,22 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
                     .addSubActionView(ab2, 60, 60)
                     .addSubActionView(ab3, 60, 60)
                     .attachTo(img)
-                    .setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener()
-                    {
+                    .setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
                         @Override
-                        public void onMenuOpened(FloatingActionMenu floatingActionMenu)
-                        {
+                        public void onMenuOpened(FloatingActionMenu floatingActionMenu) {
 
-                            for (FloatingActionMenu Iteratemenu : menus)
-                            {
+                            for (FloatingActionMenu Iteratemenu : menus) {
                                 //if (Iteratemenu.isOpen())
                                 Iteratemenu.close(true);
                             }
 
                             Currentmenu = floatingActionMenu;
-                            //floatingActionMenu.getSubActionItems().get(2).view.setTag(R.id.ACTION_BUTTON_TWO);
                             floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());
-                            //Toast.makeText(context,((Liquor)floatingActionMenu.getSubActionItems().get(2).view.getTag()).getLiquorName(),Toast.LENGTH_SHORT).show();
 
                         }
 
                         @Override
-                        public void onMenuClosed(FloatingActionMenu floatingActionMenu)
-                        {
+                        public void onMenuClosed(FloatingActionMenu floatingActionMenu) {
                             Currentmenu = null;
                         }
                     })
@@ -235,20 +210,18 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
 
 
         @Override
-        public void onClick(View v)
-        {
-            switch (v.getId())
-            {
+        public void onClick(View v) {
+            switch (v.getId()) {
                 case R.id.ACTION_BUTTON_ONE:
                     Toast.makeText(context, "This is Button one", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.ACTION_BUTTON_TWO:
-                    View view = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout,null);
+                    View view = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout, null);
                     AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                     dialog.setView(view);
-                    ((TextView)view.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
-                    view.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor)v.getTag()).getTileColor()));
+                    ((TextView) view.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
+                    view.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor) v.getTag()).getTileColor()));
                     dialog.create().show();
                     break;
 

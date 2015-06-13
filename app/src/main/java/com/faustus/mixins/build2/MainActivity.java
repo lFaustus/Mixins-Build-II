@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import fragments.MainMenu;
+import com.faustus.mixins.build2.fragments.CreateLiquor;
+import com.faustus.mixins.build2.fragments.MainMenu;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -16,7 +17,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null)
-            getFragmentManager().beginTransaction().add(R.id.root_view, MainMenu.newInstance("MainMenu")).commit();
+            //getFragmentManager().beginTransaction().add(R.id.root_view, MainMenu.newInstance("MainMenu")).commit();
+        getFragmentManager().beginTransaction().add(R.id.root_view, CreateLiquor.newInstance("CreateLiquor")).commit();
 
 
     }

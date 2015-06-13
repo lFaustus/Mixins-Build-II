@@ -1,11 +1,9 @@
-package model;
+package com.faustus.mixins.build2.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by flux on 5/26/15.

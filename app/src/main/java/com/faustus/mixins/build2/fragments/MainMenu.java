@@ -1,4 +1,4 @@
-package fragments;
+package com.faustus.mixins.build2.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,19 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.faustus.mixins.build2.ExtendedStaggeredGRidLayoutManager;
+import com.faustus.mixins.build2.ExtendedStaggeredGridLayoutManager;
 import com.faustus.mixins.build2.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import adapters.EndlessStaggeredRecyclerOnScrollListener;
-import adapters.RecyclerStaggeredAdapter;
-import database.GenerateLiquors;
+import com.faustus.mixins.build2.adapters.EndlessStaggeredRecyclerOnScrollListener;
+import com.faustus.mixins.build2.adapters.RecyclerStaggeredAdapter;
+import com.faustus.mixins.build2.database.GenerateLiquors;
 
 
 /**
@@ -43,7 +41,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private String mParam1;
     // private String mParam2;
     private RecyclerView recyclerStaggeredView;
-    private ExtendedStaggeredGRidLayoutManager stgv;
+    private ExtendedStaggeredGridLayoutManager stgv;
     private RecyclerStaggeredAdapter recyclerAdapter;
 
     private OnFragmentInteractionListener mListener;
@@ -107,7 +105,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
             recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), (ArrayList) savedInstanceState.getParcelableArrayList(LIQUORS_TAG));
         }
         recyclerStaggeredView.setAdapter(recyclerAdapter);
-        stgv = new ExtendedStaggeredGRidLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
+        stgv = new ExtendedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         stgv.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         recyclerStaggeredView.setLayoutManager(stgv);
         recyclerStaggeredView.addOnScrollListener(new EndlessStaggeredRecyclerOnScrollListener(stgv)
@@ -209,7 +207,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
+     * to the activity and potentially other com.faustus.mixins.build2.fragments contained in that
      * activity.
      * <p/>
      * See the Android Training lesson <a href=

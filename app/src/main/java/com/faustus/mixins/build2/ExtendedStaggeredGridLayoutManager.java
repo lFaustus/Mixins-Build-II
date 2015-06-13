@@ -6,7 +6,7 @@ import android.util.Log;
 /**
  * Created by flux on 6/4/15.
  */
-public class ExtendedStaggeredGRidLayoutManager extends StaggeredGridLayoutManager
+public class ExtendedStaggeredGridLayoutManager extends StaggeredGridLayoutManager
 {
 
     /**
@@ -16,7 +16,7 @@ public class ExtendedStaggeredGRidLayoutManager extends StaggeredGridLayoutManag
      *                    orientation is horizontal, spanCount is number of rows.
      * @param orientation {@link #VERTICAL} or {@link #HORIZONTAL}
      */
-    public ExtendedStaggeredGRidLayoutManager(int spanCount, int orientation)
+    public ExtendedStaggeredGridLayoutManager(int spanCount, int orientation)
     {
         super(spanCount, orientation);
     }

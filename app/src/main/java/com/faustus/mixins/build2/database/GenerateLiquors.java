@@ -1,11 +1,11 @@
-package database;
+package com.faustus.mixins.build2.database;
 
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import model.Liquor;
+import com.faustus.mixins.build2.model.Liquor;
 
 /**
  * Created by flux on 6/1/15.
