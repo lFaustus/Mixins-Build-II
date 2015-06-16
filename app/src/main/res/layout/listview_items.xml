@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="70dp">
+
+    <View
+        android:id="@+id/left_border_listitem"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:background="#FF5252">
+
+    </View>
+
+    <TextView
+        android:id="@+id/listview_value_listitem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/listviewitem_default_value"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/left_border_listitem"
+        android:layout_toEndOf="@+id/left_border_listitem"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/listview_label_listitem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listview_value_listitem"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_toRightOf="@+id/left_border_listitem"
+        android:layout_toEndOf="@+id/left_border_listitem"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
+        android:text="Label"/>
+
+
+</RelativeLayout>

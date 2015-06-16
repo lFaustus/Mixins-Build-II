@@ -1,90 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:card_view="http://schemas.android.com/apk/res-auto"
+              xmlns:fab="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="horizontal">
 
 
-    <ScrollView
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:scrollbars="none">
-
-
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="220dp"
+                android:layout_height="340dp"
+                android:layout_gravity="center"
+                >
 
-                <View
-                    android:id="@+id/left_border"
-                    android:layout_width="10dp"
-                    android:layout_height="match_parent"
-                    android:background="#FF5252">
-                </View>
-
-                <FrameLayout
+                <ImageView
+                    android:id="@+id/liquor_image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="200dp"
+                    android:src="@drawable/hello"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="fitXY"/>
 
-                    <ImageView
-                        android:layout_width="fill_parent"
-                        android:layout_height="200dp"
-                        android:contentDescription="liquor_image"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/hello"/>
+               <ListView
+                   android:id="@+id/liquor_listview_infos"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:choiceMode="singleChoice"
+                   android:layout_below="@+id/liquor_image"
+                   android:scrollbars="none"/>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_gravity="bottom"
-                        android:background="#B2673AB7">
+                <com.software.shell.fab.ActionButton
+                    style="@style/fab_action_button_style"
+                    fab:type="DEFAULT"
+                    fab:button_color="#B29c27b0"
+                    fab:shadow_radius="3dp"
+                    fab:shadow_xOffset="2dp"
+                    fab:shadow_yOffset="2.5dp"
+                    android:layout_alignBottom="@+id/liquor_image"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="103dp"
+                    android:layout_marginRight="@dimen/fab_button_margin_right"
+                    android:layout_marginEnd="@dimen/fab_button_margin_right"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="start|center_vertical"
-                            android:clickable="true"
-                            android:editable="true"
-                            android:text="Press me to give name this mix"/>
-                    </RelativeLayout>
-                </FrameLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="10dp"
-                    android:layout_height="match_parent"
-                    android:background="#FF5252">
-                </View>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:clickable="true"
-                    android:text="Press me to give description this mix"
-                    android:textSize="15sp"/>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
-    </ScrollView>
+
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -114,16 +82,20 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:move_outside_circle="true"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
-                    />
+                    android:textColor="@color/material_gray"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,15 +122,19 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
+                    android:textColor="@color/material_gray"
                     />
 
                 <TextView
@@ -194,15 +170,19 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
+                    android:textColor="@color/material_gray"
                     />
 
                 <TextView
@@ -231,15 +211,19 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
+                    android:textColor="@color/material_gray"
                     />
 
                 <TextView
@@ -275,15 +259,19 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
+                    android:textColor="@color/material_gray"
                     />
 
                 <TextView
@@ -312,15 +300,19 @@
                     app:use_custom_radii="true"
                     app:circle_x_radius="90"
                     app:circle_y_radius="90"
+                    app:circle_stroke_width="8"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="0%"
+                    android:text="0ml"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textSize="30sp"
+                    android:textColor="@color/material_gray"
                     />
 
                 <TextView

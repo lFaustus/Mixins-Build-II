@@ -460,7 +460,7 @@ public class CircularSeekBar extends View {
         mCirclePaint.setStrokeWidth(mCircleStrokeWidth);
         mCirclePaint.setStyle(Paint.Style.STROKE);
         mCirclePaint.setStrokeJoin(Paint.Join.ROUND);
-        mCirclePaint.setStrokeCap(Paint.Cap.ROUND);
+        mCirclePaint.setStrokeCap(Paint.Cap.SQUARE);
 
         mCircleFillPaint = new Paint();
         mCircleFillPaint.setAntiAlias(true);
@@ -475,7 +475,7 @@ public class CircularSeekBar extends View {
         mCircleProgressPaint.setStrokeWidth(mCircleStrokeWidth);
         mCircleProgressPaint.setStyle(Paint.Style.STROKE);
         mCircleProgressPaint.setStrokeJoin(Paint.Join.ROUND);
-        mCircleProgressPaint.setStrokeCap(Paint.Cap.ROUND);
+        mCircleProgressPaint.setStrokeCap(Paint.Cap.SQUARE);
 
         mCircleProgressGlowPaint = new Paint();
         mCircleProgressGlowPaint.set(mCircleProgressPaint);
