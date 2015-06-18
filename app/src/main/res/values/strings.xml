@@ -11,7 +11,7 @@
         <item>Name</item>
         <item>Description</item>
     </string-array>
-    
+
     <string name="listviewitem_default_value">N/A</string>
 
 </resources>
