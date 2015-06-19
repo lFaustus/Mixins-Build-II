@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.ExtendedStaggeredGridLayoutManager;
+import com.faustus.mixins.build2.Fragments;
+import com.faustus.mixins.build2.MainActivity;
+import com.faustus.mixins.build2.OnFragmentChangeListener;
 import com.faustus.mixins.build2.R;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -44,7 +47,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private ExtendedStaggeredGridLayoutManager stgv;
     private RecyclerStaggeredAdapter recyclerAdapter;
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentChangeListener mListener;
 
     public MainMenu()
     {
@@ -160,24 +163,24 @@ public class MainMenu extends Fragment implements View.OnClickListener
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
+    /*public void onButtonPressed(Uri uri)
     {
         if (mListener != null)
         {
             mListener.onFragmentInteraction(uri);
         }
-    }
+    }*/
 
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        /*try {
-            mListener = (OnFragmentInteractionListener) activity;
+        try {
+            mListener = (OnFragmentChangeListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -190,18 +193,19 @@ public class MainMenu extends Fragment implements View.OnClickListener
     @Override //Onclick Listener for Floating Side Buttons
     public void onClick(View v)
     {
-        switch (v.getId())
-        {
-            case R.id.floating_side_button_1:
-                Toast.makeText(getActivity(), "This is button 1", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.floating_side_button_2:
-                Toast.makeText(getActivity(), "This is button 2", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.floating_side_button_3:
-                Toast.makeText(getActivity(), "This is button 3", Toast.LENGTH_SHORT).show();
-                break;
-        }
+        if(mListener!=null)
+            switch (v.getId())
+            {
+                case R.id.floating_side_button_1:
+                    mListener.OnFragmentChange(Fragments.CREATELIQUOR);
+                    break;
+                case R.id.floating_side_button_2:
+                    mListener.OnFragmentChange(Fragments.MIXONTHESPOT);
+                    break;
+                case R.id.floating_side_button_3:
+                    Toast.makeText(getActivity(), "This is button 3", Toast.LENGTH_SHORT).show();
+                    break;
+            }
     }
 
     /**

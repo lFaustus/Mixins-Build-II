@@ -4,12 +4,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.faustus.mixins.build2.fragments.CreateLiquor;
 import com.faustus.mixins.build2.fragments.MainMenu;
+import com.faustus.mixins.build2.fragments.MixOnTheSpot;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnFragmentChangeListener {
 
 
     @Override
@@ -17,8 +19,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null)
-            //getFragmentManager().beginTransaction().add(R.id.root_view, MainMenu.newInstance("MainMenu")).commit();
-        getFragmentManager().beginTransaction().add(R.id.root_view, CreateLiquor.newInstance("CreateLiquor")).commit();
+            getFragmentManager().beginTransaction().add(R.id.root_view, MainMenu.newInstance("MainMenu")).commit();
 
 
     }
@@ -43,5 +44,37 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void OnFragmentChange(Fragments fragment) {
+
+        if(fragment == Fragments.CREATELIQUOR)
+        {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.root_view,CreateLiquor.newInstance(fragment.getTAG()))
+                    .addToBackStack(null).commit();
+
+        }
+        else if(fragment == Fragments.MIXONTHESPOT)
+        {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.root_view,MixOnTheSpot.newInstance(fragment.getTAG()))
+                    .addToBackStack(null).commit();
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if(getFragmentManager().getBackStackEntryCount() > 0)
+        {
+            getFragmentManager().popBackStack();
+            return;
+        }
+
+        super.onBackPressed();
+        finish();
     }
 }

@@ -1,13 +1,12 @@
 package com.faustus.mixins.build2.fragments;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,60 +21,67 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CreateLiquor#newInstance} factory method to
+ * Use the {@link MixOnTheSpot#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircularSeekBarChangeListener, View.OnClickListener {
+public class MixOnTheSpot extends Fragment implements View.OnClickListener,CircularSeekBar.OnCircularSeekBarChangeListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String FRAGMENT_TAG = "CreateLiquor";
-    private final String VIEWGROUP_CSEEKBAR_TAG = "viewgroup_circularseekbar";
+    private static final String ARG_PARAM1 = "MixOnTheSpot";
     private final String BOTTLE_VOLUME = "VOLUME";
-    private String mParam1;
-    private String[] mListViewLabels;
-    private ListView mListView;
+    private final String VIEWGROUP_CSEEKBAR_TAG = "viewgroup_circularseekbar";
     private Map<Bottle, TextView> mTextViewSeekBarValue = Collections.synchronizedMap(new HashMap<Bottle, TextView>());
     private Map<String, String> mOrder = Collections.synchronizedMap(new LinkedHashMap<String, String>());
     private int mCounter = 0;
-    private TextView mSeekBarTextViewValue;
     private Bottle[] mBottle;
+    private TextView mSeekBarTextViewValue;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
 
 
-    public CreateLiquor() {
-        // Required empty public constructor
-    }
 
-    public static CreateLiquor newInstance(String param1) {
-        CreateLiquor fragment = new CreateLiquor();
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     *
+     * @return A new instance of fragment MixOnTheSpot.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static MixOnTheSpot newInstance(String param1) {
+        MixOnTheSpot fragment = new MixOnTheSpot();
         Bundle args = new Bundle();
-        args.putString(FRAGMENT_TAG, param1);
+        args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public MixOnTheSpot() {
+        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(FRAGMENT_TAG);
+            mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.mix_drinks_ui, container, false);
-        mListView = (ListView) v.findViewById(R.id.liquor_listview_infos);
+        View v = inflater.inflate(R.layout.mix_drinks_ui,container,false);
+        v.findViewById(R.id.liquor_listview_infos).setVisibility(View.GONE);
         return v;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mListViewLabels = getActivity().getResources().getStringArray(R.array.list_items);
-        mListView.setAdapter(new ListViewAdapter());
-        mBottle = Bottle.values();
         ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
+        mBottle = Bottle.values();
         initializeCircularSeekBar(vg);
     }
 
@@ -111,6 +117,11 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
     }
 
     @Override
+    public void onClick(View v) {
+        Log.i("CLICKED", "CLICKED");
+    }
+
+    @Override
     public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
         mSeekBarTextViewValue.setText(progress + "ml");
     }
@@ -132,50 +143,11 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
                 mOrder.put(bottle.name() + BOTTLE_VOLUME, String.valueOf(seekBar.getProgress()));
             }
         }
-        //Log.i("mOrder values", mOrder.values()+"");
+        Log.i("mOrder values", mOrder.values()+"");
     }
 
     @Override
     public void onStartTrackingTouch(CircularSeekBar seekBar) {
         mSeekBarTextViewValue = mTextViewSeekBarValue.get(seekBar.getTag());
-    }
-
-    @Override
-    public void onClick(View v) {
-        Log.i("CLICKED", "CLICKED");
-    }
-
-
-
-    private class ListViewAdapter extends ArrayAdapter<String> {
-        ListViewAdapter() {
-            super(getActivity(), R.layout.listview_items, R.id.listview_label_listitem, mListViewLabels);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            ListViewHolder mListViewHolder = null;
-            if (view == null) {
-                view = LayoutInflater.from(getActivity()).inflate(R.layout.listview_items, parent, false);
-                mListViewHolder = new ListViewHolder(view);
-                view.setTag(mListViewHolder);
-            }
-            else {
-                mListViewHolder = (ListViewHolder) view.getTag();
-            }
-            mListViewHolder.mLabel.setText(getItem(position));
-
-            return view;
-        }
-
-        private class ListViewHolder {
-            TextView mLabel;
-
-            ListViewHolder(View v) {
-                mLabel = (TextView) v.findViewById(R.id.listview_label_listitem);
-            }
-        }
-
     }
 }
