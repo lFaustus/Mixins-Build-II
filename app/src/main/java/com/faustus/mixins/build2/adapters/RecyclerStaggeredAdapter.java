@@ -1,5 +1,6 @@
 package com.faustus.mixins.build2.adapters;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -83,6 +84,9 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         //holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.Tile_label.setBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.img.setTag(LiquorItems.get(position));
+
+
+
     }
 
     @Override
@@ -93,6 +97,12 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
 
     }
 
@@ -125,20 +135,12 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             txtview = (TextView) itemView.findViewById(R.id.textLiquor);
             Tile = (CardView) itemView.findViewById(R.id.card_view);
             Tile_label = (FrameLayout) itemView.findViewById(R.id.tile_label);
-            //fabButton = (ActionButton) itemView.findViewById(R.id.fab_button);
 
 
-            //Log.i("onCreateViewHolder", "OnCreateViewHolder");
-            // SubActionButton.Builder builder = new SubActionButton.Builder(context);
-            //FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-            //params.setMargins(10, 10, 10, 10); //button content margin
-            //builder.setLayoutParams(params);//useless
+
             FloatingActionButton.LayoutParams buttonparams = new FloatingActionButton.LayoutParams(30, 30);// Button size
             buttonparams.setMargins(10, 10, 10, 10);
-            //builder.setLayoutParams(params2);
-            /*ImageView image1 = new ImageView(context);
-            ImageView image2 = new ImageView(context);
-            ImageView image3 = new ImageView(context);*/
+
             ActionButton ab1 = new ActionButton(context);
             ActionButton ab2 = new ActionButton(context);
             ActionButton ab3 = new ActionButton(context);

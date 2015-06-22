@@ -12,6 +12,8 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
     private final int visibleThreshold = 5;
     private StaggeredGridLayoutManager mStaggeredgrid;
     private int firstVisibleItem, VisibleItemCount, totalItemCount, current_page = 1;
+    public static final int PREVIOUS_SCROLL_STATE_DEFAULT = -1;
+    private int previous_scroll_state = PREVIOUS_SCROLL_STATE_DEFAULT;
 
     public EndlessStaggeredRecyclerOnScrollListener(StaggeredGridLayoutManager staggeredgrid)
     {
@@ -45,8 +47,19 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
 
 
     }
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+
+       OnScrollStateChanged(previous_scroll_state,newState);
+        previous_scroll_state = newState;
+    }
+
 
     public abstract void OnLoadMore(int page);
 
     public abstract void OnScrolled();
+
+    public abstract void OnScrollStateChanged(int previous_state,int newState);
+
 }

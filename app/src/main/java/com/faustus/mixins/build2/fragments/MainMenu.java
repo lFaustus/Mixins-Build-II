@@ -2,28 +2,35 @@ package com.faustus.mixins.build2.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.ExtendedStaggeredGridLayoutManager;
-import com.faustus.mixins.build2.Fragments;
-import com.faustus.mixins.build2.MainActivity;
 import com.faustus.mixins.build2.OnFragmentChangeListener;
 import com.faustus.mixins.build2.R;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+//import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 import com.faustus.mixins.build2.adapters.EndlessStaggeredRecyclerOnScrollListener;
 import com.faustus.mixins.build2.adapters.RecyclerStaggeredAdapter;
+import com.faustus.mixins.build2.animation.PopupFloatingActionButtonAnimation;
+import com.faustus.mixins.build2.animation.PopupSubFloatingActionButtonAnimation;
 import com.faustus.mixins.build2.database.GenerateLiquors;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.software.shell.fab.ActionButton;
 
 
 /**
@@ -46,6 +53,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private RecyclerView recyclerStaggeredView;
     private ExtendedStaggeredGridLayoutManager stgv;
     private RecyclerStaggeredAdapter recyclerAdapter;
+    private ActionButton mFabButton;
+    private PopupFloatingActionButtonAnimation mFabAnimation;
 
     private OnFragmentChangeListener mListener;
 
@@ -120,6 +129,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
                 {
                     RecyclerStaggeredAdapter.Currentmenu.updateItemPositions();
                 }
+
+
             }
 
             @Override
@@ -128,12 +139,49 @@ public class MainMenu extends Fragment implements View.OnClickListener
                 recyclerAdapter.LoadMore(page);
                 recyclerAdapter.notifyItemInserted(page);
             }
+
+            @Override
+            public void OnScrollStateChanged(int previous_state, int newState)
+            {
+                    boolean mStartAnimation = false;
+
+                    if(newState == RecyclerView.SCROLL_STATE_IDLE)
+                    {
+                        mFabAnimation.setAnimationDuration(400)
+                                .setTranslationY(0)
+                                .setInterpolator(new OvershootInterpolator(0.9F))
+                                .setStartDelay(10);
+
+                    }
+                      //  mFabButton.moveUp(50F);
+                    else if(newState == RecyclerView.SCROLL_STATE_DRAGGING)
+                    {
+                        mFabAnimation.setAnimationDuration(400)
+                                .setTranslationY(100)
+                                .setInterpolator(new AccelerateDecelerateInterpolator())
+                                .setStartDelay(10);
+
+                    }
+
+                if(previous_state == EndlessStaggeredRecyclerOnScrollListener.PREVIOUS_SCROLL_STATE_DEFAULT ||
+                        previous_state == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    mStartAnimation = true;
+                }
+
+                if(mStartAnimation) {
+                    mFabAnimation.startAnimation();
+                    Log.i("OnScrollStateChanged", newState + "");
+                    mStartAnimation = false;
+                }
+
+            }
         });
 
 
     }
 
-    private void initializeFloatingMenuAndButtons()
+    /*private void initializeFloatingMenuAndButtons()
     {
         ViewGroup vg =(ViewGroup) getView().findViewWithTag("floatingactionsmenu");
         Log.i("ChildCount", vg.getChildCount() + "");
@@ -150,6 +198,57 @@ public class MainMenu extends Fragment implements View.OnClickListener
                 Log.i("FABIndex Exception","Tag not set at Button Index "+i);
             }
         }
+
+    }*/
+
+    private void initializeFloatingMenuAndButtons()
+    {
+        /*FloatingActionButton mFabButton = new FloatingActionButton.Builder(getActivity())
+                .setContentView(new ImageView(getActivity()))
+                .build();*/
+
+        mFabButton = new ActionButton(getActivity());
+        FloatingActionButton.LayoutParams mFabButtonParams = new FloatingActionButton.LayoutParams(FloatingActionButton.LayoutParams.WRAP_CONTENT,FloatingActionButton.LayoutParams.WRAP_CONTENT);
+        mFabButtonParams.gravity = Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL;
+        mFabButton.setLayoutParams(mFabButtonParams);
+        mFabButton.setSize(70);
+        mFabAnimation = new PopupFloatingActionButtonAnimation(mFabButton);
+
+        if(getView().getRootView() != null)
+            ((ViewGroup)getView().getRootView()).addView(mFabButton);
+
+        FloatingActionButton.LayoutParams buttonparams = new FloatingActionButton.LayoutParams(30, 30);// Button size
+        buttonparams.setMargins(10, 10, 10, 10);
+
+        ActionButton ab1 = new ActionButton(getActivity());
+        ActionButton ab2 = new ActionButton(getActivity());
+        ActionButton ab3 = new ActionButton(getActivity());
+        ActionButton ab4 = new ActionButton(getActivity());
+
+        ab1.setButtonColor(Color.parseColor("#2196f3"));
+        ab2.setButtonColor(Color.parseColor("#2196f3"));
+        ab3.setButtonColor(Color.parseColor("#2196f3"));
+        ab4.setButtonColor(Color.parseColor("#2196f3"));
+        ab1.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_video));
+        ab2.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_chat));
+        ab3.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_video));
+        ab4.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_action_camera));
+        //ab1.setImageSize(20);
+        ab1.setLayoutParams(buttonparams);
+        ab2.setLayoutParams(buttonparams);
+        ab3.setLayoutParams(buttonparams);
+        ab4.setLayoutParams(buttonparams);
+        FloatingActionMenu mFabMenu = new FloatingActionMenu.Builder(getActivity())
+                .setStartAngle(-20)
+                .setEndAngle(-155)
+                .setAnimationHandler(new PopupSubFloatingActionButtonAnimation())
+                .setRadius(90)
+                .addSubActionView(ab1)
+                .addSubActionView(ab2)
+                .addSubActionView(ab3)
+                .addSubActionView(ab4)
+                .attachTo(mFabButton)
+                .build();
 
     }
 
@@ -193,9 +292,10 @@ public class MainMenu extends Fragment implements View.OnClickListener
     @Override //Onclick Listener for Floating Side Buttons
     public void onClick(View v)
     {
-        if(mListener!=null)
+        /*if(mListener!=null)
             switch (v.getId())
             {
+
                 case R.id.floating_side_button_1:
                     mListener.OnFragmentChange(Fragments.CREATELIQUOR);
                     break;
@@ -205,7 +305,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
                 case R.id.floating_side_button_3:
                     Toast.makeText(getActivity(), "This is button 3", Toast.LENGTH_SHORT).show();
                     break;
-            }
+            }*/
     }
 
     /**
@@ -213,7 +313,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other com.faustus.mixins.build2.fragments contained in that
      * activity.
-     * <p/>
+     * <p/>*
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

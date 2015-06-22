@@ -3,7 +3,6 @@
     android:id="@+id/card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -18,6 +17,27 @@
         android:scaleType="fitXY"
         android:src="@drawable/hello"/>
 
+    <FrameLayout
+        android:id="@+id/edit_mode_tag"
+        android:layout_width="125dp"
+        android:layout_height="80dp"
+        android:layout_gravity="top|start"
+        android:layout_marginLeft="-30dp"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="-10dp"
+        android:rotation="-45">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/black_semi_transparent"
+            android:gravity="center"
+            android:text="Edit Mode"
+            android:textSize="13sp"/>
+
+    </FrameLayout>
+
 
     <FrameLayout
         android:id="@+id/tile_label"
@@ -31,10 +51,7 @@
             android:id="@+id/textLiquor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="left|center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:text="Test"
             android:textSize="15sp"/>
 
