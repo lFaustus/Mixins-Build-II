@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,25 +28,25 @@ import java.util.ArrayList;
 /**
  * Created by flux on 5/26/15.
  */
-public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder> {
+public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder> {
 
     public static FloatingActionMenu Currentmenu = null;
     private static Activity context;
     private static ArrayList<FloatingActionMenu> menus = new ArrayList<>();
     ArrayList<Liquor> LiquorItems;
     private DisplayMetrics windowMetrics;
-
+    private boolean isModify = false;
+    static RecyclerView mRecyclerView;
 
     public RecyclerStaggeredAdapter(Activity activity, ArrayList<Liquor> liquorItems) {
         LiquorItems = liquorItems;
         context = activity;
         windowMetrics = context.getResources().getDisplayMetrics();
-
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Log.i("onCreateViewHolder", "OnCreateViewHolder");
+         Log.i("onCreateViewHolder", "OnCreateViewHolder");
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.staggered_items, parent, false));
     }
 
@@ -84,7 +85,7 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         //holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.Tile_label.setBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.img.setTag(LiquorItems.get(position));
-
+        holder.txtview.setTag(position);
 
 
     }
@@ -97,13 +98,16 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-
+        mRecyclerView = recyclerView;
     }
 
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-
+        if(isModify)
+            holder.txtviewModeIndicator.setVisibility(View.VISIBLE);
+        else if(!isModify && holder.txtviewModeIndicator.getVisibility() == View.VISIBLE)
+            holder.txtviewModeIndicator.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -122,9 +126,20 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
 
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setModify(boolean isModify)
+    {
+        this.isModify = isModify;
+    }
+
+    public boolean isModify()
+    {
+        return this.isModify;
+    }
+
+
+ class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView img;
-        TextView txtview;
+        TextView txtview,txtviewModeIndicator;
         CardView Tile;
         FrameLayout Tile_label;
         //ActionButton fabButton;
@@ -135,6 +150,7 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
             txtview = (TextView) itemView.findViewById(R.id.textLiquor);
             Tile = (CardView) itemView.findViewById(R.id.card_view);
             Tile_label = (FrameLayout) itemView.findViewById(R.id.tile_label);
+            txtviewModeIndicator = (TextView)itemView.findViewById(R.id.edit_mode_tag);
 
 
 
@@ -198,6 +214,7 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
 
                             Currentmenu = floatingActionMenu;
                             floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());
+                            floatingActionMenu.getSubActionItems().get(0).view.setTag(txtview.getTag());
 
                         }
 
@@ -215,7 +232,8 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.ACTION_BUTTON_ONE:
-                    Toast.makeText(context, "This is Button one", Toast.LENGTH_SHORT).show();
+                    OnRemoveItem((int)v.getTag());
+
                     break;
 
                 case R.id.ACTION_BUTTON_TWO:
@@ -234,5 +252,5 @@ public class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStagg
         }
     }
 
-
+    public abstract void OnRemoveItem(int position);
 }

@@ -24,11 +24,13 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
     public void onScrolled(RecyclerView recyclerView, int dx, int dy)
     {
         super.onScrolled(recyclerView, dx, dy);
-        OnScrolled();
+
         firstVisibleItem = mStaggeredgrid.findFirstVisibleItemPositions(null)[0];
         VisibleItemCount = recyclerView.getChildCount();
         totalItemCount = mStaggeredgrid.getItemCount();
         current_page = totalItemCount;
+        OnScrolled(firstVisibleItem,VisibleItemCount,totalItemCount);
+
         Log.i("ItemCount", "ItemCount " + totalItemCount);
         Log.i("Childcount", "childcount: " + VisibleItemCount);
         Log.i("FirstPosition", "FirstVisibleItemPosition: " + firstVisibleItem);
@@ -58,7 +60,7 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
 
     public abstract void OnLoadMore(int page);
 
-    public abstract void OnScrolled();
+    public abstract void OnScrolled(int FirstVisibleItem, int VisibleItemCount, int TotalItemCount);
 
     public abstract void OnScrollStateChanged(int previous_state,int newState);
 

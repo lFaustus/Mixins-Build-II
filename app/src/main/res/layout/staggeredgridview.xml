@@ -14,7 +14,7 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <!--com.getbase.floatingactionbutton.FloatingActionsMenu
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:tag="floatingactionsmenu"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="#0091EA"
             fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_title="Edit Liquor"
             />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -42,7 +43,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="#FF5722"
             fab:fab_colorPressed="@color/white_pressed"
-
+            fab:fab_title="Mix On The Spot"
             />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -52,10 +53,11 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="#673AB7"
             fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_title="Add New Liquor"
             />
 
 
 
-    </com.getbase.floatingactionbutton.FloatingActionsMenu-->
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </FrameLayout>

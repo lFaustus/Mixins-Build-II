@@ -41,6 +41,8 @@ public class GenerateLiquors
         materialPalette = materialPalettes;
     }
 
+
+
     public static void LoadDrinks(int number,ArrayList<Liquor> liquors )
     {
 

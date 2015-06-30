@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.faustus.mixins.build2.Bottle;
+import com.faustus.mixins.build2.Fragments;
 import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.circularseekbar.CircularSeekBar;
 
@@ -25,10 +26,10 @@ import java.util.Map;
  * Use the {@link CreateLiquor#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircularSeekBarChangeListener, View.OnClickListener {
+public class CreateLiquor extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String FRAGMENT_TAG = "CreateLiquor";
+    protected static final String FRAGMENT_TAG = "CreateLiquor";
     private final String VIEWGROUP_CSEEKBAR_TAG = "viewgroup_circularseekbar";
     private final String BOTTLE_VOLUME = "VOLUME";
     private String mParam1;
@@ -37,8 +38,7 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
     private Map<Bottle, TextView> mTextViewSeekBarValue = Collections.synchronizedMap(new HashMap<Bottle, TextView>());
     private Map<String, String> mOrder = Collections.synchronizedMap(new LinkedHashMap<String, String>());
     private int mCounter = 0;
-    private TextView mSeekBarTextViewValue;
-    private Bottle[] mBottle;
+    protected Bottle[] mBottle;
 
 
     public CreateLiquor() {
@@ -72,11 +72,14 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mListViewLabels = getActivity().getResources().getStringArray(R.array.list_items);
-        mListView.setAdapter(new ListViewAdapter());
-        mBottle = Bottle.values();
-        ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
-        initializeCircularSeekBar(vg);
+        if(!mParam1.equals(Fragments.MIXONTHESPOT.getTAG())) {
+            mListViewLabels = getActivity().getResources().getStringArray(R.array.list_items);
+            mListView.setAdapter(new ListViewAdapter());
+        }
+            mBottle = Bottle.values();
+            ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
+            initializeCircularSeekBar(vg);
+
     }
 
     private void initializeCircularSeekBar(ViewGroup vg) {
@@ -89,7 +92,7 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
                 else {
                     if (vg.getChildAt(i) instanceof CircularSeekBar) {
                         vg.getChildAt(i).setTag(mBottle[mCounter]);
-                        ((CircularSeekBar) vg.getChildAt(i)).setOnSeekBarChangeListener(this);
+                        ((CircularSeekBar) vg.getChildAt(i)).setOnSeekBarChangeListener(new SeekBarListener());
 
                     }
                     if (vg.getChildAt(i) instanceof TextView) {
@@ -111,38 +114,49 @@ public class CreateLiquor extends Fragment implements CircularSeekBar.OnCircular
     }
 
     @Override
-    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-        mSeekBarTextViewValue.setText(progress + "ml");
-    }
-
-    @Override
-    public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
-        Bottle bottle = (Bottle) seekBar.getTag();
-        if (mOrder.get(bottle.name()) == null && seekBar.getProgress() != 0) {
-            mOrder.put(bottle.name(), String.valueOf(bottle.getBottleValue()));
-            mOrder.put(bottle.name() + BOTTLE_VOLUME, String.valueOf(seekBar.getProgress()));
-        }
-        else if (mOrder.get(bottle.name()) != null && seekBar.getProgress() >= 0) {
-            if (seekBar.getProgress() == 0) {
-                mOrder.remove(bottle.name());
-                mOrder.remove(bottle.name() + BOTTLE_VOLUME);
-            }
-            else {
-                mOrder.put(bottle.name() + BOTTLE_VOLUME, String.valueOf(seekBar.getProgress()));
-            }
-        }
-        //Log.i("mOrder values", mOrder.values()+"");
-    }
-
-    @Override
-    public void onStartTrackingTouch(CircularSeekBar seekBar) {
-        mSeekBarTextViewValue = mTextViewSeekBarValue.get(seekBar.getTag());
-    }
-
-    @Override
     public void onClick(View v) {
         Log.i("CLICKED", "CLICKED");
+    }
+
+    /*
+    *Created a sub class that implements seekbar change listener instead of implementing the listener in main class
+    * to prevent a textview change value bug wherein user tries to move the thumb of multiple seekbars
+    * this class allows the seekbar to change their corresponding textview value even the user tries to move the thumb
+    * of multiple seekbars
+     */
+    private class SeekBarListener implements  CircularSeekBar.OnCircularSeekBarChangeListener
+    {
+        private TextView mSeekBarTextViewValue;
+        SeekBarListener(){}
+
+        @Override
+        public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+            mSeekBarTextViewValue.setText(progress + "ml");
+        }
+
+        @Override
+        public void onStopTrackingTouch(CircularSeekBar seekBar) {
+            Bottle bottle = (Bottle) seekBar.getTag();
+            if (mOrder.get(bottle.name()) == null && seekBar.getProgress() != 0) {
+                mOrder.put(bottle.name(), String.valueOf(bottle.getBottleValue()));
+                mOrder.put(bottle.name() + BOTTLE_VOLUME, String.valueOf(seekBar.getProgress()));
+            }
+            else if (mOrder.get(bottle.name()) != null && seekBar.getProgress() >= 0) {
+                if (seekBar.getProgress() == 0) {
+                    mOrder.remove(bottle.name());
+                    mOrder.remove(bottle.name() + BOTTLE_VOLUME);
+                }
+                else {
+                    mOrder.put(bottle.name() + BOTTLE_VOLUME, String.valueOf(seekBar.getProgress()));
+                }
+            }
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(CircularSeekBar seekBar) {
+            mSeekBarTextViewValue = mTextViewSeekBarValue.get(seekBar.getTag());
+        }
     }
 
 

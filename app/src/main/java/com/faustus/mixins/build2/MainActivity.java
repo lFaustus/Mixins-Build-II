@@ -4,7 +4,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.faustus.mixins.build2.fragments.CreateLiquor;
 import com.faustus.mixins.build2.fragments.MainMenu;
@@ -59,7 +58,7 @@ public class MainActivity extends ActionBarActivity implements OnFragmentChangeL
         else if(fragment == Fragments.MIXONTHESPOT)
         {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.root_view,MixOnTheSpot.newInstance(fragment.getTAG()))
+                    .replace(R.id.root_view, MixOnTheSpot.newInstance(fragment.getTAG()))
                     .addToBackStack(null).commit();
         }
 
@@ -77,4 +76,4 @@ public class MainActivity extends ActionBarActivity implements OnFragmentChangeL
         super.onBackPressed();
         finish();
     }
-}
+  }
