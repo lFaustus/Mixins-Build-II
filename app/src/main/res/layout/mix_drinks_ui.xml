@@ -13,36 +13,53 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <RelativeLayout
             android:layout_width="220dp"
             android:layout_height="340dp"
             android:layout_gravity="center"
             >
 
-            <ImageView
-                android:id="@+id/liquor_image"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:fitsSystemWindows="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/hello"/>
+            <LinearLayout
+                android:id="@+id/liquor_image_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
+                    android:background="#FF5252"/>
+
+                <ImageView
+                    android:id="@+id/liquor_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/hello"/>
+            </LinearLayout>
+
 
             <ListView
                 android:id="@+id/liquor_listview_infos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/liquor_image"
+                android:layout_below="@+id/liquor_image_layout"
                 android:choiceMode="singleChoice"
                 android:scrollbars="none"/>
 
             <com.software.shell.fab.ActionButton
                 style="@style/fab_action_button_style"
-                android:layout_alignBottom="@+id/liquor_image"
+                android:layout_alignBottom="@+id/liquor_image_layout"
+                android:id="@+id/liquor_image_select"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="103dp"
                 android:layout_marginEnd="@dimen/fab_button_margin_right"
                 android:layout_marginRight="@dimen/fab_button_margin_right"
+                fab:image="@drawable/ic_action_camera"
                 fab:button_color="#B29c27b0"
                 fab:shadow_radius="3dp"
                 fab:shadow_xOffset="2dp"

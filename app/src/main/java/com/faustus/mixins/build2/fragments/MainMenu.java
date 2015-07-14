@@ -249,13 +249,23 @@ public class MainMenu extends Fragment implements View.OnClickListener
                     break;
                 case R.id.floating_side_button_3:
                     View viewTemp;
+                    this.recyclerAdapter.setModify(!this.recyclerAdapter.isModify());
                     for (int i = 0; i < recyclerStaggeredView.getChildCount(); i++)
                     {
                         viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.edit_mode_tag);
                         viewTemp.setVisibility(viewTemp.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
-                    }
+                        viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.imageLiquor);
+                        if(!this.recyclerAdapter.isModify())
+                            viewTemp.setClickable(false);
+                        else
+                            viewTemp.setClickable(true);
+                        viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.card_view);
+                        if(this.recyclerAdapter.isModify())
+                            viewTemp.setClickable(false);
+                        else
+                            viewTemp.setClickable(true);
 
-                    this.recyclerAdapter.setModify(!this.recyclerAdapter.isModify());
+                    }
                     break;
             }
     }

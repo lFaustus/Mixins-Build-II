@@ -3,6 +3,7 @@ package com.faustus.mixins.build2.adapters;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -31,8 +32,9 @@ import java.util.ArrayList;
 public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<RecyclerStaggeredAdapter.ViewHolder> {
 
     public static FloatingActionMenu Currentmenu = null;
-    private static Activity context;
-    private static ArrayList<FloatingActionMenu> menus = new ArrayList<>();
+    private View mDialogView = null;
+    private Activity context;
+    private ArrayList<FloatingActionMenu> menus = new ArrayList<>();
     ArrayList<Liquor> LiquorItems;
     private DisplayMetrics windowMetrics;
     private boolean isModify = false;
@@ -84,7 +86,7 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         holder.txtview.setText(LiquorItems.get(position).getLiquorName());
         //holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.Tile_label.setBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
-        holder.img.setTag(LiquorItems.get(position));
+        holder.Tile.setTag(LiquorItems.get(position));
         holder.txtview.setTag(position);
 
 
@@ -105,9 +107,21 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if(isModify)
+        {
             holder.txtviewModeIndicator.setVisibility(View.VISIBLE);
-        else if(!isModify && holder.txtviewModeIndicator.getVisibility() == View.VISIBLE)
+            holder.img.setClickable(true);
+            holder.Tile.setClickable(false);
+        }
+        else if(!isModify && holder.txtviewModeIndicator.getVisibility() == View.VISIBLE )
+        {
             holder.txtviewModeIndicator.setVisibility(View.INVISIBLE);
+        }
+
+        if(!isModify && holder.img.isClickable())
+        {
+            holder.img.setClickable(false);
+            holder.Tile.setClickable(true);
+        }
     }
 
     @Override
@@ -137,11 +151,12 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
     }
 
 
- class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+ class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,DialogInterface.OnCancelListener,FloatingActionMenu.MenuStateChangeListener {
         ImageView img;
         TextView txtview,txtviewModeIndicator;
         CardView Tile;
         FrameLayout Tile_label;
+
         //ActionButton fabButton;
 
         public ViewHolder(View itemView) {
@@ -152,7 +167,8 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
             Tile_label = (FrameLayout) itemView.findViewById(R.id.tile_label);
             txtviewModeIndicator = (TextView)itemView.findViewById(R.id.edit_mode_tag);
 
-
+            Tile.setOnClickListener(this);
+            Tile.setClickable(true);
 
             FloatingActionButton.LayoutParams buttonparams = new FloatingActionButton.LayoutParams(30, 30);// Button size
             buttonparams.setMargins(10, 10, 10, 10);
@@ -203,28 +219,9 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
                     .addSubActionView(ab2, 60, 60)
                     .addSubActionView(ab3, 60, 60)
                     .attachTo(img)
-                    .setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
-                        @Override
-                        public void onMenuOpened(FloatingActionMenu floatingActionMenu) {
-
-                            for (FloatingActionMenu Iteratemenu : menus) {
-                                //if (Iteratemenu.isOpen())
-                                Iteratemenu.close(true);
-                            }
-
-                            Currentmenu = floatingActionMenu;
-                            floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());
-                            floatingActionMenu.getSubActionItems().get(0).view.setTag(txtview.getTag());
-
-                        }
-
-                        @Override
-                        public void onMenuClosed(FloatingActionMenu floatingActionMenu) {
-                            Currentmenu = null;
-                        }
-                    })
+                    .setStateChangeListener(this)
                     .build();
-            menus.add(itemMenu);
+            //menus.add(itemMenu);
         }
 
 
@@ -233,24 +230,61 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
             switch (v.getId()) {
                 case R.id.ACTION_BUTTON_ONE:
                     OnRemoveItem((int)v.getTag());
-
                     break;
 
                 case R.id.ACTION_BUTTON_TWO:
-                    View view = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout, null);
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                    dialog.setView(view);
-                    ((TextView) view.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
-                    view.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor) v.getTag()).getTileColor()));
-                    dialog.create().show();
+                    Toast.makeText(context, "This is Button two", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.ACTION_BUTTON_THREE:
                     Toast.makeText(context, "This is Button three", Toast.LENGTH_SHORT).show();
                     break;
+
+                case R.id.card_view:
+                    if(mDialogView == null)
+                    {
+                        mDialogView = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout, null);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                        dialog.setView(mDialogView);
+                        dialog.setOnCancelListener(this);
+                        ((TextView) mDialogView.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
+                        mDialogView.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor) v.getTag()).getTileColor()));
+                        dialog.create().show();
+                    }
+
+                    break;
             }
         }
-    }
+
+     @Override
+     public void onCancel(DialogInterface dialog)
+     {
+            mDialogView = null;
+     }
+
+     @Override
+     public void onMenuOpened(FloatingActionMenu floatingActionMenu)
+     {
+        /* for (FloatingActionMenu Iteratemenu : menus) {
+             //if (Iteratemenu.isOpen())
+             Iteratemenu.close(true);
+         }*/
+
+         if(Currentmenu !=null)
+             Currentmenu.close(true);
+         Currentmenu = floatingActionMenu;
+
+         // floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());
+         floatingActionMenu.getSubActionItems().get(0).view.setTag(txtview.getTag());
+     }
+
+     @Override
+     public void onMenuClosed(FloatingActionMenu floatingActionMenu)
+     {
+         if(Currentmenu == floatingActionMenu)
+            Currentmenu = null;
+     }
+ }
 
     public abstract void OnRemoveItem(int position);
 }

@@ -26,7 +26,7 @@ import com.faustus.mixins.build2.R;
 public class FileChooser extends ListActivity
 {
 	private static String ExternalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-	private static String targetPath = ExternalStoragePath + "/thebartenderdrinks/";
+	private static String targetPath = ExternalStoragePath + "/test/";
 	private static File targetFiles;
 	private FileAdapter mAdapter;
 	

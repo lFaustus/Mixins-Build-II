@@ -1,5 +1,6 @@
 package com.faustus.mixins.build2.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,11 @@ public class MixOnTheSpot extends CreateLiquor{
         return fragment;
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.mix_drinks_ui,container,false);
-        v.findViewById(R.id.liquor_listview_infos).setVisibility(View.GONE);
-        return v;
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        getView().findViewById(R.id.liquor_image_select).setVisibility(View.GONE);
     }
 
 }

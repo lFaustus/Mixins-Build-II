@@ -1,13 +1,17 @@
 package com.faustus.mixins.build2.fragments;
 
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +19,9 @@ import com.faustus.mixins.build2.Bottle;
 import com.faustus.mixins.build2.Fragments;
 import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.circularseekbar.CircularSeekBar;
+import com.faustus.mixins.build2.filechooser.FileChooser;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +45,7 @@ public class CreateLiquor extends Fragment implements View.OnClickListener {
     private Map<String, String> mOrder = Collections.synchronizedMap(new LinkedHashMap<String, String>());
     private int mCounter = 0;
     protected Bottle[] mBottle;
+    private ImageView imgView;
 
 
     public CreateLiquor() {
@@ -65,7 +72,9 @@ public class CreateLiquor extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.mix_drinks_ui, container, false);
-        mListView = (ListView) v.findViewById(R.id.liquor_listview_infos);
+        if(!mParam1.equals(Fragments.MIXONTHESPOT.getTAG()))
+            mListView = (ListView) v.findViewById(R.id.liquor_listview_infos);
+        imgView = (ImageView)v.findViewById(R.id.liquor_image);
         return v;
     }
 
@@ -77,25 +86,42 @@ public class CreateLiquor extends Fragment implements View.OnClickListener {
             mListView.setAdapter(new ListViewAdapter());
         }
             mBottle = Bottle.values();
-            ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
-            initializeCircularSeekBar(vg);
+            //ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
+           ViewGroup vg = (ViewGroup)getView().getRootView();
+            initializeViews(vg);
 
     }
 
-    private void initializeCircularSeekBar(ViewGroup vg) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1)
+            if(resultCode == Activity.RESULT_OK)
+            {
+               imgView.setImageBitmap(BitmapFactory.decodeFile(data.getStringExtra("choosenImage")));
+            }
+    }
+
+    private void initializeViews(ViewGroup vg) {
         try {
             for (int i = 0; i < vg.getChildCount(); i++) {
 
                 if (vg.getChildAt(i) instanceof ViewGroup) {
-                    initializeCircularSeekBar((ViewGroup) vg.getChildAt(i));
+                    initializeViews((ViewGroup) vg.getChildAt(i));
                 }
                 else {
-                    if (vg.getChildAt(i) instanceof CircularSeekBar) {
+                    if(vg.getChildAt(i) instanceof com.software.shell.fab.ActionButton)
+                    {
+                        vg.getChildAt(i).setOnClickListener(this);
+                    }
+
+                   else  if (vg.getChildAt(i) instanceof CircularSeekBar) {
                         vg.getChildAt(i).setTag(mBottle[mCounter]);
                         ((CircularSeekBar) vg.getChildAt(i)).setOnSeekBarChangeListener(new SeekBarListener());
 
                     }
-                    if (vg.getChildAt(i) instanceof TextView) {
+                   else  if (vg.getChildAt(i) instanceof TextView) {
                         vg.getChildAt(i).setOnClickListener(this);
                         if (vg.getChildAt(i).getTag() != null) {
                             mTextViewSeekBarValue.put(mBottle[mCounter], (TextView) vg.getChildAt(i));
@@ -116,6 +142,13 @@ public class CreateLiquor extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Log.i("CLICKED", "CLICKED");
+                switch(v.getId())
+                {
+                    case R.id.liquor_image_select:
+                        Intent imgChooser = new Intent(getActivity(), FileChooser.class);
+                        startActivityForResult(imgChooser,1);
+                        break;
+                }
     }
 
     /*

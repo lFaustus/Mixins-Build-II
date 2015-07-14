@@ -62,7 +62,7 @@ public class FileAdapter extends ArrayAdapter<Items>
 				view = LayoutInflater.from(context).inflate(layoutid, parent,false);
 				viewholder = new ViewHolder();
 				
-				viewholder.customFont = Typeface.createFromAsset(context.getAssets(), "danielabold.ttf");
+				//viewholder.customFont = Typeface.createFromAsset(context.getAssets(), "danielabold.ttf");
 				viewholder.imgview = (ImageView) view.findViewById(R.id.imageView1_newDrink);
 				viewholder.txtname = (TextView) view.findViewById(R.id.imgname);
 				viewholder.txtpath = (TextView) view.findViewById(R.id.imgpath);
