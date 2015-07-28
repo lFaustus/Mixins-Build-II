@@ -1,34 +1,155 @@
 package com.faustus.mixins.build2.database;
 
-import android.os.Environment;
+import android.app.Activity;
+import android.database.Cursor;
 import android.util.Log;
 
-import java.io.File;
+import com.faustus.mixins.build2.model.Liquor;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Random;
-
-import com.faustus.mixins.build2.model.Liquor;
 
 /**
  * Created by flux on 6/1/15.
  */
 public class GenerateLiquors
 {
-    private static int mLastTileType = -1;
+    private static int mCurrentTileType = -1;
     public static final int SMALL_TILE = 0;
     public static final int LONG_TILE = 1;
     public static final int BIG_TILE = 2;
     private static ArrayList<Liquor> liquorlist = null;
     private static boolean BigTile = false;
-    private static int temp = -1;
+    private static int mExpectedTileType = -1;
     private static String[] materialPalette;
-
-    public static ArrayList<Liquor> generateDrinks(int number)
+    private static int counter = 0;
+    private static Activity mActivity;
+    private static DB mDB;
+    public static ArrayList<Liquor> generateDrinks(int number,ArrayList<Liquor> list)
     {
 
-        LoadDrinks(number,liquorlist);
+        //LoadDrinks(number,list);
         return liquorlist;
     }
+    public static ArrayList<Liquor> generateDrinks(Activity activity)
+    {
+        mActivity = activity;
+        LoadDrinks();
+        return liquorlist;
+    }
+
+
+    public static ArrayList<Liquor> generateDrinks(ArrayList<Liquor> mTempArray)
+    {
+            ArrayList<Liquor> mArray = mTempArray;
+
+            return mArray;
+    }
+
+    public static void LoadDrinks()
+    {
+        //if(liquorlist == null)
+        //{
+            fetchDrinksFromDB();
+        //}
+
+        RandomTileSize(liquorlist.size());
+
+    }
+
+
+    private static void RandomTileSize(int size)
+    {
+
+        for(;counter<size;counter++)
+        {
+            generateSize();
+        }
+
+    }
+
+    private static void generateSize()
+    {
+        if(mCurrentTileType == BIG_TILE || mExpectedTileType == -1 )
+        {
+            do
+            {
+                mExpectedTileType = randomTile(3);
+            } while (mCurrentTileType == mExpectedTileType);
+        }
+
+        switch(mExpectedTileType)
+        {
+            case BIG_TILE:
+                mCurrentTileType = BIG_TILE;
+                BigTile = false;
+                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                liquorlist.get(counter).setTileColor(randomTileColor());
+                liquorlist.get(counter).setTileType(mCurrentTileType);
+                break;
+
+            case SMALL_TILE:
+                if(mCurrentTileType == LONG_TILE)
+                    mExpectedTileType = SMALL_TILE;
+                else if(mCurrentTileType == SMALL_TILE)
+                    BigTile = true;
+                else
+                    mExpectedTileType = LONG_TILE;
+
+                mCurrentTileType = SMALL_TILE;
+                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                liquorlist.get(counter).setTileColor(randomTileColor());
+                liquorlist.get(counter).setTileType(mCurrentTileType);
+                if(BigTile)
+                    mExpectedTileType = BIG_TILE;
+                break;
+
+            case LONG_TILE:
+                if(mCurrentTileType == SMALL_TILE)
+                    BigTile = true;
+
+                mExpectedTileType = SMALL_TILE;
+                mCurrentTileType = LONG_TILE;
+                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                liquorlist.get(counter).setTileColor(randomTileColor());
+                liquorlist.get(counter).setTileType(mCurrentTileType);
+                break;
+        }
+    }
+
+
+
+
+    private static void fetchDrinksFromDB()
+    {
+        mDB = new DB(mActivity);
+        if(liquorlist == null)
+            liquorlist = new ArrayList<Liquor>();
+        Liquor mTempLiquor;
+        Cursor cursor = mDB.selectTen();
+        JSONObject mJsonObject;
+        while(cursor.moveToNext())
+        {
+            try
+            {
+                mJsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(mDB.getDBColumns()[1])));
+                mTempLiquor = new Liquor(mJsonObject);
+                mTempLiquor.setLiquorId(cursor.getInt(cursor.getColumnIndex(mDB.getDBColumns()[0])));
+                liquorlist.add(mTempLiquor);
+                Log.i("liquorlist",liquorlist.size()+"");
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+    }
+
+
 
     /*public static void LoadMoreDrinks(int number,ArrayList<Liquor> liquors)
     {
@@ -41,100 +162,6 @@ public class GenerateLiquors
         materialPalette = materialPalettes;
     }
 
-
-
-    public static void LoadDrinks(int number,ArrayList<Liquor> liquors )
-    {
-
-        int i;
-
-        if(liquors == null)
-        {
-            liquors = new ArrayList<>();
-            liquorlist = liquors;
-            i = 0;
-
-
-        }
-        else
-            i = liquors.size();
-
-        for(; i<number; i++)
-        {
-
-            if (mLastTileType == -1 || temp == BIG_TILE)
-            {
-                do
-                {
-                    temp = randomTile(3);
-
-                } while ((mLastTileType == temp && i!=0) || mLastTileType == temp);
-                mLastTileType = temp;
-
-            }
-
-
-
-            if(mLastTileType == SMALL_TILE)
-            {
-                if(BigTile)
-                {
-                    liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                    mLastTileType = BIG_TILE;
-                    //temp = mLastTileType;
-                }
-                else
-                {
-                    if (temp == LONG_TILE)
-                    {
-                        temp = mLastTileType;
-                        mLastTileType = SMALL_TILE;
-                        liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                        BigTile = true;
-                    } else
-                    {
-                            liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                            temp = SMALL_TILE;
-                            mLastTileType = LONG_TILE;
-
-                    }
-
-
-                }
-            }
-            else
-            {
-                if (mLastTileType == LONG_TILE)
-                {
-                    if (temp == SMALL_TILE)
-                    {
-                        liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                        mLastTileType = SMALL_TILE;
-                        BigTile = true;
-                    } else
-                    {
-                        liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                        temp = LONG_TILE;
-                        mLastTileType = SMALL_TILE;
-
-                    }
-                }
-                else
-                {
-                    temp = mLastTileType;
-                    liquors.add(new Liquor("Liquor Number: " + i, mLastTileType,randomTileColor()));
-                    BigTile = false;
-                   /* do
-                    {
-                        temp = randomTile(2);
-
-                    } while (mLastTileType == temp);*/
-                    //mLastTileType = temp;
-                }
-            }
-
-        }
-    }
 
     private static int randomTile(int number)
     {

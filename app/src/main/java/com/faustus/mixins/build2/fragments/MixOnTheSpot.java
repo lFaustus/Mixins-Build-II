@@ -1,10 +1,8 @@
 package com.faustus.mixins.build2.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.faustus.mixins.build2.R;
 
@@ -30,6 +28,7 @@ public class MixOnTheSpot extends CreateLiquor{
     {
         super.onActivityCreated(savedInstanceState);
         getView().findViewById(R.id.liquor_image_select).setVisibility(View.GONE);
+        ((Button)getView().findViewById(R.id.button_drinks)).setText("Mix");
     }
 
 }

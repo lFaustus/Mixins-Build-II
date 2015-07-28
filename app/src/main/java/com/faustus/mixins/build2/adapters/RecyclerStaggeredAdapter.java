@@ -1,6 +1,5 @@
 package com.faustus.mixins.build2.adapters;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,12 +17,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.database.GenerateLiquors;
 import com.faustus.mixins.build2.model.Liquor;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.software.shell.fab.ActionButton;
+
 import java.util.ArrayList;
 
 /**
@@ -42,6 +43,7 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
 
     public RecyclerStaggeredAdapter(Activity activity, ArrayList<Liquor> liquorItems) {
         LiquorItems = liquorItems;
+        Log.i("ARRAYLIST SIZE",LiquorItems.size()+"");
         context = activity;
         windowMetrics = context.getResources().getDisplayMetrics();
     }
@@ -135,10 +137,10 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         return LiquorItems;
     }
 
-    public void LoadMore(int page) {
-        GenerateLiquors.LoadDrinks(page, LiquorItems);
+    /*public void LoadMore(int page) {
+        GenerateLiquors.LoadDrinks(getLiquorItems().size() + page, getLiquorItems());
 
-    }
+    }*/
 
     public void setModify(boolean isModify)
     {
@@ -221,7 +223,7 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
                     .attachTo(img)
                     .setStateChangeListener(this)
                     .build();
-            //menus.add(itemMenu);
+            menus.add(itemMenu);
         }
 
 
@@ -243,7 +245,7 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
                 case R.id.card_view:
                     if(mDialogView == null)
                     {
-                        mDialogView = context.getLayoutInflater().inflate(R.layout.alert_dialog_layout, null);
+                        mDialogView = context.getLayoutInflater().inflate(R.layout.liquor_information_dialog, null);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                         dialog.setView(mDialogView);
                         dialog.setOnCancelListener(this);
@@ -265,13 +267,13 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
      @Override
      public void onMenuOpened(FloatingActionMenu floatingActionMenu)
      {
-        /* for (FloatingActionMenu Iteratemenu : menus) {
-             //if (Iteratemenu.isOpen())
-             Iteratemenu.close(true);
-         }*/
+         for (FloatingActionMenu Iteratemenu : menus) {
+             if (Iteratemenu.isOpen())
+                Iteratemenu.close(true);
+         }
 
-         if(Currentmenu !=null)
-             Currentmenu.close(true);
+        /* if(Currentmenu !=null)
+             Currentmenu.close(true);*/
          Currentmenu = floatingActionMenu;
 
          // floatingActionMenu.getSubActionItems().get(1).view.setTag(img.getTag());

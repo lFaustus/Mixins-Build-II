@@ -47,7 +47,6 @@ public class MainActivity extends ActionBarActivity implements OnFragmentChangeL
 
     @Override
     public void OnFragmentChange(Fragments fragment) {
-
         if(fragment == Fragments.CREATELIQUOR)
         {
             getFragmentManager().beginTransaction()

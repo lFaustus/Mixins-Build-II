@@ -2,6 +2,7 @@ package com.faustus.mixins.build2.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -20,9 +21,14 @@ import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.adapters.EndlessStaggeredRecyclerOnScrollListener;
 import com.faustus.mixins.build2.adapters.RecyclerStaggeredAdapter;
 import com.faustus.mixins.build2.animation.PopupFloatingActionButtonAnimation;
+import com.faustus.mixins.build2.database.DB;
 import com.faustus.mixins.build2.database.GenerateLiquors;
+import com.faustus.mixins.build2.model.Liquor;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.software.shell.fab.ActionButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -45,6 +51,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private ActionButton mFabButton;
     private PopupFloatingActionButtonAnimation mFabAnimation;
     private OnFragmentChangeListener mListener;
+    private boolean mStartAnimation = false;
+
 
     public MainMenu()
     {
@@ -99,7 +107,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
         if (savedInstanceState == null)
         {
             GenerateLiquors.setMaterialPalette(getActivity().getResources().getStringArray(R.array.material_palette));
-            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), GenerateLiquors.generateDrinks(11))
+
+            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), GenerateLiquors.generateDrinks(getActivity()))
             {
                 @Override
                 public void OnRemoveItem(int position)
@@ -141,14 +150,14 @@ public class MainMenu extends Fragment implements View.OnClickListener
             @Override
             public void OnLoadMore(int page)
             {
-                recyclerAdapter.LoadMore(page);
+                //recyclerAdapter.LoadMore(page);
+                GenerateLiquors.LoadDrinks();
                 recyclerAdapter.notifyItemInserted(page);
             }
 
             @Override
             public void OnScrollStateChanged(int previous_state, int newState)
             {
-                boolean mStartAnimation = false;
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
@@ -203,6 +212,9 @@ public class MainMenu extends Fragment implements View.OnClickListener
         }
 
     }
+
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState)

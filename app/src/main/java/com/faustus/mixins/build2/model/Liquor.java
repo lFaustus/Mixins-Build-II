@@ -10,6 +10,9 @@ import org.json.JSONObject;
  */
 public class Liquor implements Parcelable
 {
+
+
+    private int Liquor_Id;
     private String Liquor_Name;
     private String Liquor_Picture_URL;
     private String Liquor_Description;
@@ -54,6 +57,7 @@ public class Liquor implements Parcelable
 
     }
 
+
     private Liquor(Parcel parcel)
     {
        /* try
@@ -84,6 +88,16 @@ public class Liquor implements Parcelable
             return new Liquor[size];
         }
     };
+
+    public int getLiquorId()
+    {
+        return Liquor_Id;
+    }
+
+    public void setLiquorId(int liquor_Id)
+    {
+        Liquor_Id = liquor_Id;
+    }
 
     public String getLiquorName()
     {
@@ -123,6 +137,11 @@ public class Liquor implements Parcelable
     public void setTileColor(String tileColor)
     {
         TileColor = tileColor;
+    }
+
+    public void setTileType(int tileType)
+    {
+        TileType = tileType;
     }
 
     public int getTileType()

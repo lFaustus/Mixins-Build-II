@@ -14,10 +14,9 @@
         android:orientation="vertical">
 
 
-
         <RelativeLayout
             android:layout_width="220dp"
-            android:layout_height="340dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             >
 
@@ -48,19 +47,27 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/liquor_image_layout"
                 android:choiceMode="singleChoice"
+                android:dividerHeight="-2dp"
                 android:scrollbars="none"/>
 
+            <Button
+                android:id="@+id/button_drinks"
+                style="@style/mix_drinks_ui_button"
+                android:layout_below="@+id/liquor_listview_infos"
+                android:text="Add to Menu"/>
+
             <com.software.shell.fab.ActionButton
+                android:id="@+id/liquor_image_select"
                 style="@style/fab_action_button_style"
                 android:layout_alignBottom="@+id/liquor_image_layout"
-                android:id="@+id/liquor_image_select"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="103dp"
                 android:layout_marginEnd="@dimen/fab_button_margin_right"
                 android:layout_marginRight="@dimen/fab_button_margin_right"
-                fab:image="@drawable/ic_action_camera"
                 fab:button_color="#B29c27b0"
+                fab:image="@drawable/ic_action_camera"
+                fab:image_size="30dp"
                 fab:shadow_radius="3dp"
                 fab:shadow_xOffset="2dp"
                 fab:shadow_yOffset="2.5dp"
@@ -120,8 +127,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Vodka"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
 
@@ -163,8 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Triple Sec"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
         </LinearLayout>
@@ -213,8 +220,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Gin"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
 
@@ -256,8 +263,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Lime Juice"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
         </LinearLayout>
@@ -306,8 +313,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Beer"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
 
@@ -349,8 +356,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:textColor="@color/material_gray"
                     android:text="Tequila"
+                    android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
         </LinearLayout>
