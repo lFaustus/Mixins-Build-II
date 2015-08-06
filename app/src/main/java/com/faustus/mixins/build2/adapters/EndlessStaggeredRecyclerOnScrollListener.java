@@ -2,7 +2,6 @@ package com.faustus.mixins.build2.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 
 /**
  * Created by flux on 6/1/15.
@@ -12,12 +11,15 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
     private final int visibleThreshold = 5;
     private StaggeredGridLayoutManager mStaggeredgrid;
     private int firstVisibleItem, VisibleItemCount, totalItemCount, current_page = 1;
+    private static int previousTotal;
     public static final int PREVIOUS_SCROLL_STATE_DEFAULT = -1;
     private int previous_scroll_state = PREVIOUS_SCROLL_STATE_DEFAULT;
+    private boolean isLoading = false;
 
     public EndlessStaggeredRecyclerOnScrollListener(StaggeredGridLayoutManager staggeredgrid)
     {
         mStaggeredgrid = staggeredgrid;
+
     }
 
     @Override
@@ -29,16 +31,32 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
         VisibleItemCount = recyclerView.getChildCount();
         totalItemCount = mStaggeredgrid.getItemCount();
         current_page = totalItemCount;
-        OnScrolled(firstVisibleItem,VisibleItemCount,totalItemCount);
+        OnScrolled(firstVisibleItem,VisibleItemCount,totalItemCount,previousTotal);
 
-        Log.i("ItemCount", "ItemCount " + totalItemCount);
+        /*Log.i("ItemCount", "ItemCount " + totalItemCount);
         Log.i("Childcount", "childcount: " + VisibleItemCount);
-        Log.i("FirstPosition", "FirstVisibleItemPosition: " + firstVisibleItem);
+        Log.i("FirstPosition", "FirstVisibleItemPosition: " + firstVisibleItem);*/
 
 
-        if ((totalItemCount - VisibleItemCount) <= (firstVisibleItem + visibleThreshold))
+        /*if ((totalItemCount - VisibleItemCount) <= (firstVisibleItem + visibleThreshold))
         {
             current_page++;
+            OnLoadMore(current_page);
+        }*/
+        if(isLoading)
+        {
+            if(totalItemCount > previousTotal)
+            {
+                previousTotal = totalItemCount + 1;
+                isLoading = false;
+            }
+
+        }
+
+        if(!isLoading &&(firstVisibleItem + VisibleItemCount) >= totalItemCount)
+        {
+            current_page++;
+            isLoading = true;
             OnLoadMore(current_page);
         }
         /*if((VisibleItemCount + firstVisibleItem) >= totalItemCount)
@@ -60,7 +78,7 @@ public abstract class EndlessStaggeredRecyclerOnScrollListener extends RecyclerV
 
     public abstract void OnLoadMore(int page);
 
-    public abstract void OnScrolled(int FirstVisibleItem, int VisibleItemCount, int TotalItemCount);
+    public abstract void OnScrolled(int FirstVisibleItem, int VisibleItemCount, int TotalItemCount, int LastTotalItemCount);
 
     public abstract void OnScrollStateChanged(int previous_state,int newState);
 

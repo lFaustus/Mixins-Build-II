@@ -8,11 +8,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.database.GenerateLiquors;
+import com.faustus.mixins.build2.loader.ImageLoader;
 import com.faustus.mixins.build2.model.Liquor;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
@@ -35,22 +36,31 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
     public static FloatingActionMenu Currentmenu = null;
     private View mDialogView = null;
     private Activity context;
-    private ArrayList<FloatingActionMenu> menus = new ArrayList<>();
-    ArrayList<Liquor> LiquorItems;
+    private final ArrayList<FloatingActionMenu> menus = new ArrayList<>();
+    private ArrayList<Liquor> LiquorItems;
     private DisplayMetrics windowMetrics;
-    private boolean isModify = false;
-    static RecyclerView mRecyclerView;
+    private static boolean isModify = false;
+    //static RecyclerView mRecyclerView;
+    public static GenerateLiquors mGenerateLiquors;
+    private int mDateDiff;
+   // private BitmapManager mBitmapManager;
+    private ImageLoader mImageLoader;
 
-    public RecyclerStaggeredAdapter(Activity activity, ArrayList<Liquor> liquorItems) {
-        LiquorItems = liquorItems;
-        Log.i("ARRAYLIST SIZE",LiquorItems.size()+"");
+
+    public RecyclerStaggeredAdapter(Activity activity,ArrayList<Liquor>liquorlist) {
+        LiquorItems = liquorlist;
         context = activity;
+       // mBitmapManager = new BitmapManager(activity);
+        mImageLoader = new ImageLoader(activity);
+        if(LiquorItems == null)
+            LiquorItems =  new ArrayList<>();
+        mGenerateLiquors = new GenerateLiquors(context,LiquorItems);
         windowMetrics = context.getResources().getDisplayMetrics();
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-         Log.i("onCreateViewHolder", "OnCreateViewHolder");
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.staggered_items, parent, false));
     }
 
@@ -86,12 +96,27 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         }
 
         holder.txtview.setText(LiquorItems.get(position).getLiquorName());
-        //holder.Tile.setCardBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.Tile_label.setBackgroundColor(Color.parseColor(LiquorItems.get(position).getTileColor()));
         holder.Tile.setTag(LiquorItems.get(position));
+       //holder.setPosition(position);
+        //holder.img.setImageBitmap(BitmapFactory.decodeFile(LiquorItems.get(position).getLiquorPictureURL()));
+       //mBitmapManager.LoadImage(holder.img,LiquorItems.get(position).getLiquorPictureURL());
         holder.txtview.setTag(position);
-
-
+       /* if(isIdle)
+        {
+            try
+            {
+                SimpleDateFormat mSdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date mTempDate = mSdf.parse(mSdf.format(new Date()));
+                Date mTempDate2 = mSdf.parse(LiquorItems.get(position).getDateAdded());
+                long mDateDiff1 = ((mTempDate2.getTime() - mTempDate.getTime()) / (1000 * 60 * 60 * 24));
+                Log.i("DATEDIFF", mDateDiff1 + "");
+            }
+            catch (ParseException e)
+            {
+                e.printStackTrace();
+            }
+        }*/
     }
 
     @Override
@@ -102,21 +127,23 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        mRecyclerView = recyclerView;
+       // mRecyclerView = recyclerView;
+
     }
 
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
+        Liquor mLiquor = (Liquor)holder.Tile.getTag();
+        mImageLoader.DisplayImage(mLiquor.getLiquorPictureURL(), holder.img, mLiquor.getLiquorName());
+        holder.txtviewModeIndicator.setVisibility(View.INVISIBLE);
         if(isModify)
         {
             holder.txtviewModeIndicator.setVisibility(View.VISIBLE);
+            holder.txtviewModeIndicator.setText("Edit Mode");
+            holder.txtviewModeIndicator.setBackgroundResource(R.color.green_material_semi_transparent);
             holder.img.setClickable(true);
             holder.Tile.setClickable(false);
-        }
-        else if(!isModify && holder.txtviewModeIndicator.getVisibility() == View.VISIBLE )
-        {
-            holder.txtviewModeIndicator.setVisibility(View.INVISIBLE);
         }
 
         if(!isModify && holder.img.isClickable())
@@ -124,11 +151,28 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
             holder.img.setClickable(false);
             holder.Tile.setClickable(true);
         }
+
+        if(mDateDiff != 30 && !isModify)
+        {
+            //((ViewGroup) holder.txtviewModeIndicator.getParent()).setBackgroundColor(Color.RED);
+            holder.txtviewModeIndicator.setText("New");
+            holder.txtviewModeIndicator.setBackgroundColor(Color.parseColor("#B2FF5252"));
+            holder.txtviewModeIndicator.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder)
+    {
+        super.onViewDetachedFromWindow(holder);
+        holder.img.setImageBitmap(null);
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
+        holder.img.setImageBitmap(null);
         if (Currentmenu != null)
             Currentmenu.close(true);
     }
@@ -137,14 +181,18 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         return LiquorItems;
     }
 
-    /*public void LoadMore(int page) {
-        GenerateLiquors.LoadDrinks(getLiquorItems().size() + page, getLiquorItems());
+    public void LoadMore() {
+        mGenerateLiquors.LoadMore();
+    }
 
-    }*/
-
-    public void setModify(boolean isModify)
+    public void setLiquorItems(ArrayList<Liquor> liquorItems)
     {
-        this.isModify = isModify;
+        LiquorItems = liquorItems;
+    }
+
+    public void setModify(boolean Modify)
+    {
+        isModify = Modify;
     }
 
     public boolean isModify()
@@ -158,6 +206,7 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         TextView txtview,txtviewModeIndicator;
         CardView Tile;
         FrameLayout Tile_label;
+       // int position;
 
         //ActionButton fabButton;
 
@@ -202,14 +251,6 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
             ab3.setOnClickListener(this);
 
 
-            /*ab1.setSize(30);
-            ab2.setSize(30);o
-            ab3.setSize(30);*/
-
-            /*image1.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_camera));
-            image2.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_chat));
-            image3.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_video));*/
-
             FloatingActionMenu itemMenu = new FloatingActionMenu.Builder(context)
                     .setStartAngle(-20)
                     .setEndAngle(-155)
@@ -225,6 +266,12 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
                     .build();
             menus.add(itemMenu);
         }
+
+    /* public void setPosition(int position)
+     {
+         this.position = position;
+     }*/
+
 
 
         @Override
@@ -245,13 +292,20 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
                 case R.id.card_view:
                     if(mDialogView == null)
                     {
-                        mDialogView = context.getLayoutInflater().inflate(R.layout.liquor_information_dialog, null);
+                        mDialogView = context.getLayoutInflater().inflate(R.layout.liquor_information_dialog_big, null);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                         dialog.setView(mDialogView);
                         dialog.setOnCancelListener(this);
                         ((TextView) mDialogView.findViewById(R.id.liquor_name)).setText(((Liquor) v.getTag()).getLiquorName());
+                        mImageLoader.DisplayImage(((Liquor) v.getTag()).getLiquorPictureURL(), ((ImageView) mDialogView.findViewById(R.id.info_picture)), ((Liquor) v.getTag()).getLiquorName());
                         mDialogView.findViewById(R.id.left_border).setBackgroundColor(Color.parseColor(((Liquor) v.getTag()).getTileColor()));
-                        dialog.create().show();
+                        AlertDialog al = dialog.show();
+
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(al.getWindow().getAttributes());
+                        lp.width = 300;
+                       // lp.gravity = Gravity.CENTER;
+                       al.getWindow().setAttributes(lp);
                     }
 
                     break;

@@ -26,7 +26,7 @@ import com.faustus.mixins.build2.R;
 public class FileChooser extends ListActivity
 {
 	private static String ExternalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-	private static String targetPath = ExternalStoragePath + "/test/";
+	private static String targetPath = ExternalStoragePath + "/thebartenderdrinks/";
 	private static File targetFiles;
 	private FileAdapter mAdapter;
 	
@@ -84,7 +84,7 @@ public class FileChooser extends ListActivity
 	{
 		super.onListItemClick(l, v, position, id);
 		Intent returnIntent = new Intent();
-		returnIntent.putExtra("choosenImage", mAdapter.getItem(position).imgPath);
+		returnIntent.putExtra("Image", mAdapter.getItem(position).imgPath);
 		setResult(RESULT_OK,returnIntent);
 		finish();
 		

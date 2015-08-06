@@ -2,6 +2,7 @@ package com.faustus.mixins.build2.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,11 +17,13 @@ public class Liquor implements Parcelable
     private String Liquor_Name;
     private String Liquor_Picture_URL;
     private String Liquor_Description;
+    private String DateAdded;
     private int TileType;
     private String TileColor;
-    private final String JSONDB_LIQUOR_NAME = "liquor_name";
-    private final String JSONDB_LIQUOR_PIC_URL = "liquor_url";
-    private final String JSONDB_LIQUOR_DESCRIPTION = "liquor_description";
+    public final static String JSONDB_LIQUOR_NAME = "Name";
+    public final static String JSONDB_LIQUOR_PIC_URL = "Image";
+    public final static String JSONDB_LIQUOR_DESCRIPTION = "Description";
+    public final static String JSONDB_LIQUOR_DATE_ADDED = "DateAdded";
     private JSONObject JSONLiquor;
 
     public Liquor(String liquor_Name)
@@ -42,19 +45,23 @@ public class Liquor implements Parcelable
 
     public Liquor(JSONObject JSONLiquor)
     {
+        //Log.i("JSON", JSONLiquor.toString());
+
         this.JSONLiquor = JSONLiquor;
         try
         {
             this.Liquor_Name = JSONLiquor.getString(JSONDB_LIQUOR_NAME);
             this.Liquor_Description = JSONLiquor.getString(JSONDB_LIQUOR_DESCRIPTION);
             this.Liquor_Picture_URL = JSONLiquor.getString(JSONDB_LIQUOR_PIC_URL);
+            this.DateAdded = JSONLiquor.getString(JSONDB_LIQUOR_DATE_ADDED);
+
         }
         catch (JSONException e)
         {
             e.printStackTrace();
 
         }
-
+       // Log.i("JSONDATE", this.DateAdded+"");
     }
 
 
@@ -70,16 +77,17 @@ public class Liquor implements Parcelable
         this.Liquor_Name = parcel.readString();
         this.Liquor_Description = parcel.readString();
         this.Liquor_Picture_URL = parcel.readString();
+        this.DateAdded = parcel.readString();
         this.TileType = parcel.readInt();
         this.TileColor = parcel.readString();
     }
 
-    public static Parcelable.Creator<Liquor> Creator = new Creator<Liquor>()
+    public static final Parcelable.Creator<Liquor> CREATOR = new Creator<Liquor>()
     {
         @Override
-        public Liquor createFromParcel(Parcel source)
+        public Liquor createFromParcel(Parcel in)
         {
-            return new Liquor(source);
+            return new Liquor(in);
         }
 
         @Override
@@ -149,6 +157,10 @@ public class Liquor implements Parcelable
         return TileType;
     }
 
+    public String getDateAdded()
+    {
+        return DateAdded;
+    }
 
     @Override
     public int describeContents()
@@ -163,6 +175,7 @@ public class Liquor implements Parcelable
         dest.writeString(Liquor_Name);
         dest.writeString(Liquor_Description);
         dest.writeString(Liquor_Picture_URL);
+        dest.writeString(DateAdded);
         dest.writeInt(TileType);
         dest.writeString(TileColor);
     }

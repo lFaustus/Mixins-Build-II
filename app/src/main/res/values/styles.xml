@@ -31,4 +31,16 @@
         <item name="android:layout_width">match_parent</item>
     </style>
 
+    <style name="liquor_dialog_ui">
+        <item name="android:background">@drawable/liquor_dialog_ui</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="liquor_dialog_ui_big">
+        <item name="android:background">@drawable/liquor_dialog_ui</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">200dp</item>
+    </style>
+
 </resources>

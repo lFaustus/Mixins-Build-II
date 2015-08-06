@@ -9,10 +9,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.R;
+import com.faustus.mixins.build2.model.Liquor;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by flux on 7/17/15.
@@ -33,11 +35,11 @@ public class DB
         SQLiteDatabase db = mDbHelper.openToWriteDB();
         ContentValues mContentValues = new ContentValues();
         try{
-            for(int i=0; i<params.length; i++)
+            for (Object param : params)
             {
-                if(params[i] instanceof JSONObject)
+                if (param instanceof JSONObject)
                 {
-                    mContentValues.put(DBhelper.mTableColumns[1],params[i].toString());
+                    mContentValues.put(DBhelper.mTableColumns[1], param.toString());
                     db.insertOrThrow(DBhelper.mTableName, null, mContentValues);
                 }
             }
@@ -74,16 +76,31 @@ public class DB
             mDbHelper.closeDB();
         }
 
-
     }
 
-    public Cursor selectTen()
+    public void select(int offset, ArrayList<Liquor> liquorlist)
     {
         SQLiteDatabase db = mDbHelper.openToReadDB();
         //Cursor cursor = db.query(DBhelper.mTableName, DBhelper.mTableColumns, null, null, null, null, null, "LIMIT 10 OFFSET 10");
-        return db.rawQuery("Select * from " + DBhelper.mTableName +" LIMIT 2",null);
-        //mDbHelper.closeDB();
-
+        Cursor cursor =  db.rawQuery("Select * from " + DBhelper.mTableName +" LIMIT 10 OFFSET " + offset,null);
+        Liquor mTempLiquor;
+        JSONObject mJsonObject;
+        while(cursor.moveToNext())
+        {
+            try
+            {
+                mJsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(this.getDBColumns()[1])));
+                mTempLiquor = new Liquor(mJsonObject);
+                mTempLiquor.setLiquorId(cursor.getInt(cursor.getColumnIndex(this.getDBColumns()[0])));
+                liquorlist.add(mTempLiquor);
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        mDbHelper.closeDB();
     }
 
     public String[] getDBColumns()

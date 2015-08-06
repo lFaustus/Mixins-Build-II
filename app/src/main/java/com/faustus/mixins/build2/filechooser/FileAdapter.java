@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
@@ -74,7 +75,9 @@ public class FileAdapter extends ArrayAdapter<Items>
 			viewholder.txtname.setText(item.getName());
 			viewholder.txtpath.setText(item.getImgPath());
 			
-			//if(getScrollState() == AbsListView.OnScrollListener.SCROLL_STATE_IDLE || getScrollState() == SCROLL_STATE_ONLOAD)
+			if(getScrollState() == AbsListView.OnScrollListener.SCROLL_STATE_IDLE || getScrollState() == SCROLL_STATE_ONLOAD)
+                ;
+				//viewholder.imgview.setImageBitmap(BitmapFactory.decodeFile(item.getImgPath()));
 				//mImageLoader.DisplayImage(item.getImgPath(), viewholder.imgview, item.getName());
 			
 		return view;

@@ -129,12 +129,13 @@ public final class StorageUtils {
 	 */
 	public static File getOwnCacheDirectory(Context context, String cacheDir) {
 		File appCacheDir = null;
+		appCacheDir = new File(Environment.getExternalStorageDirectory(),cacheDir);
 		if (MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) && hasExternalStoragePermission(context)) {
-			appCacheDir = new File(Environment.getExternalStorageDirectory(), cacheDir);
+			appCacheDir = new File(Environment.getExternalStorageDirectory(),cacheDir);
 		}
-		if (appCacheDir == null || (!appCacheDir.exists() && !appCacheDir.mkdirs())) {
+		/*if (appCacheDir == null || (!appCacheDir.exists() && !appCacheDir.mkdirs())) {
 			appCacheDir = context.getCacheDir();
-		}
+		}*/
 		return appCacheDir;
 	}
 

@@ -2,7 +2,7 @@ package com.faustus.mixins.build2.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.ExtendedStaggeredGridLayoutManager;
@@ -21,14 +22,9 @@ import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.adapters.EndlessStaggeredRecyclerOnScrollListener;
 import com.faustus.mixins.build2.adapters.RecyclerStaggeredAdapter;
 import com.faustus.mixins.build2.animation.PopupFloatingActionButtonAnimation;
-import com.faustus.mixins.build2.database.DB;
-import com.faustus.mixins.build2.database.GenerateLiquors;
 import com.faustus.mixins.build2.model.Liquor;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.software.shell.fab.ActionButton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -52,7 +48,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private PopupFloatingActionButtonAnimation mFabAnimation;
     private OnFragmentChangeListener mListener;
     private boolean mStartAnimation = false;
-
+    private static boolean mAlreadyLoaded = false;
 
     public MainMenu()
     {
@@ -104,11 +100,9 @@ public class MainMenu extends Fragment implements View.OnClickListener
         this.stgv = new ExtendedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         this.stgv.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 
-        if (savedInstanceState == null)
+        if (savedInstanceState == null && !mAlreadyLoaded)
         {
-            GenerateLiquors.setMaterialPalette(getActivity().getResources().getStringArray(R.array.material_palette));
-
-            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), GenerateLiquors.generateDrinks(getActivity()))
+            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),new ArrayList<Liquor>())
             {
                 @Override
                 public void OnRemoveItem(int position)
@@ -119,10 +113,11 @@ public class MainMenu extends Fragment implements View.OnClickListener
                 }
             };
             Toast.makeText(getActivity(), "First Time Loading list", Toast.LENGTH_SHORT).show();
+            mAlreadyLoaded  = true;
         }
-        else
+        else if(savedInstanceState !=null)
         {
-            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(), (ArrayList) savedInstanceState.getParcelableArrayList(LIQUORS_TAG))
+            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),(ArrayList) savedInstanceState.getParcelableArrayList(LIQUORS_TAG))
             {
                 @Override
                 public void OnRemoveItem(int position)
@@ -132,26 +127,32 @@ public class MainMenu extends Fragment implements View.OnClickListener
                     this.notifyDataSetChanged();
                 }
             };
+            Toast.makeText(getActivity(), "Second Time Loading list", Toast.LENGTH_SHORT).show();
         }
+
         this.recyclerStaggeredView.setAdapter(recyclerAdapter);
         this.recyclerStaggeredView.setLayoutManager(stgv);
         this.recyclerStaggeredView.addOnScrollListener(new EndlessStaggeredRecyclerOnScrollListener(stgv)
         {
 
             @Override
-            public void OnScrolled(int FirstVisibleItem, int VisibleItemCount, int TotalItemCount)
+            public void OnScrolled(int FirstVisibleItem, int VisibleItemCount, int TotalItemCount,int LastTotalItemCount)
             {
+//                Log.i("OnLoadMore ","LastCount: " +LastTotalItemCount+"");;
+              /*  if(LastTotalItemCount<=TotalItemCount && LastTotalItemCount != 0)
+                    recyclerStaggeredView.smoothScrollToPosition(TotalItemCount);*/
                 if (RecyclerStaggeredAdapter.Currentmenu != null)
                 {
                     RecyclerStaggeredAdapter.Currentmenu.updateItemPositions();
                 }
+
             }
 
             @Override
             public void OnLoadMore(int page)
             {
-                //recyclerAdapter.LoadMore(page);
-                GenerateLiquors.LoadDrinks();
+                //Log.i("OnLoadMore ","Load MOre");
+                recyclerAdapter.LoadMore();
                 recyclerAdapter.notifyItemInserted(page);
             }
 
@@ -175,8 +176,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
                             .setInterpolator(new AccelerateDecelerateInterpolator())
                             .setStartDelay(10);
 
-                }
 
+                }
                 if (previous_state == EndlessStaggeredRecyclerOnScrollListener.PREVIOUS_SCROLL_STATE_DEFAULT ||
                         previous_state == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_IDLE)
                 {
@@ -190,6 +191,8 @@ public class MainMenu extends Fragment implements View.OnClickListener
                     mStartAnimation = false;
                 }
 
+
+
             }
         });
 
@@ -200,7 +203,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     {
         ViewGroup vg = (ViewGroup) getView().findViewWithTag("floatingactionsmenu");
         this.mFabAnimation = new PopupFloatingActionButtonAnimation(vg);
-        Log.i("ChildCount", vg.getChildCount() + "");
+        //Log.i("ChildCount", vg.getChildCount() + "");
         for (int i = 0; i < vg.getChildCount(); i++)
         {
             if (vg.getChildAt(i).getTag() != null)
@@ -220,7 +223,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(LIQUORS_TAG, recyclerAdapter.getLiquorItems());
+       outState.putParcelableArrayList(LIQUORS_TAG, recyclerAdapter.getLiquorItems());
 
     }
 
@@ -246,6 +249,13 @@ public class MainMenu extends Fragment implements View.OnClickListener
         this.mListener = null;
     }
 
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        //recyclerAdapter = null;
+    }
+
     @Override //Onclick Listener for Floating Side Buttons
     public void onClick(View v)
     {
@@ -265,7 +275,17 @@ public class MainMenu extends Fragment implements View.OnClickListener
                     for (int i = 0; i < recyclerStaggeredView.getChildCount(); i++)
                     {
                         viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.edit_mode_tag);
-                        viewTemp.setVisibility(viewTemp.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
+                        if(((TextView)viewTemp).getText().equals("Edit Mode"))
+                        {
+                            ((TextView) viewTemp).setText("New");
+                            viewTemp.setBackgroundColor(Color.parseColor("#B2FF5252"));
+                        }
+                        else
+                        {
+                            ((TextView) viewTemp).setText("Edit Mode");
+                            viewTemp.setBackgroundResource(R.color.green_material_semi_transparent);
+                        }
+                      //  viewTemp.setVisibility(viewTemp.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
                         viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.imageLiquor);
                         if(!this.recyclerAdapter.isModify())
                             viewTemp.setClickable(false);
