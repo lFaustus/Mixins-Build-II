@@ -2,7 +2,6 @@ package com.faustus.mixins.build2.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -22,6 +21,9 @@ import com.faustus.mixins.build2.R;
 import com.faustus.mixins.build2.adapters.EndlessStaggeredRecyclerOnScrollListener;
 import com.faustus.mixins.build2.adapters.RecyclerStaggeredAdapter;
 import com.faustus.mixins.build2.animation.PopupFloatingActionButtonAnimation;
+import com.faustus.mixins.build2.database.DB;
+import com.faustus.mixins.build2.database.GenerateLiquors;
+import com.faustus.mixins.build2.model.CardInformation;
 import com.faustus.mixins.build2.model.Liquor;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.software.shell.fab.ActionButton;
@@ -43,12 +45,14 @@ public class MainMenu extends Fragment implements View.OnClickListener
     private String mParam1;
     private RecyclerView recyclerStaggeredView;
     private ExtendedStaggeredGridLayoutManager stgv;
-    private RecyclerStaggeredAdapter recyclerAdapter;
+    private static RecyclerStaggeredAdapter recyclerAdapter;
     private ActionButton mFabButton;
     private PopupFloatingActionButtonAnimation mFabAnimation;
     private OnFragmentChangeListener mListener;
     private boolean mStartAnimation = false;
     private static boolean mAlreadyLoaded = false;
+    private static ViewGroup.LayoutParams mCopyParams;
+    private DB mDB;
 
     public MainMenu()
     {
@@ -97,19 +101,35 @@ public class MainMenu extends Fragment implements View.OnClickListener
     {
         super.onActivityCreated(savedInstanceState);
         initializeFloatingMenuAndButtons();
+        mDB = new DB(getActivity());
         this.stgv = new ExtendedStaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         this.stgv.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 
+
         if (savedInstanceState == null && !mAlreadyLoaded)
         {
-            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),new ArrayList<Liquor>())
+            recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),new ArrayList<CardInformation>())
             {
                 @Override
                 public void OnRemoveItem(int position)
                 {
                     stgv.removeViewAt(position);
-                    this.getLiquorItems().remove(position);
-                    this.notifyDataSetChanged();
+                    mDB.delete(((Liquor) this.getmCardInformation().get(position).getmObjectArray()[0]).getLiquorName());
+                    this.getmCardInformation().remove(position);
+
+
+                    for(CardInformation card: this.getmCardInformation())
+                    {
+
+                        if(position < card.getCardPosition())
+                        {
+                            card.setCardPosition(card.getCardPosition() - 1);
+                        }
+                    }
+                    this.notifyItemRemoved(position);
+                    GenerateLiquors.counter -=1;
+
+
                 }
             };
             Toast.makeText(getActivity(), "First Time Loading list", Toast.LENGTH_SHORT).show();
@@ -117,14 +137,26 @@ public class MainMenu extends Fragment implements View.OnClickListener
         }
         else if(savedInstanceState !=null)
         {
-            this.recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),(ArrayList) savedInstanceState.getParcelableArrayList(LIQUORS_TAG))
+            recyclerAdapter = new RecyclerStaggeredAdapter(getActivity(),(ArrayList) savedInstanceState.getParcelableArrayList(LIQUORS_TAG))
             {
                 @Override
                 public void OnRemoveItem(int position)
                 {
                     stgv.removeViewAt(position);
-                    this.getLiquorItems().remove(position);
-                    this.notifyDataSetChanged();
+                    mDB.delete(((Liquor) this.getmCardInformation().get(position).getmObjectArray()[0]).getLiquorName());
+                    this.getmCardInformation().remove(position);
+
+                    for(CardInformation card: this.getmCardInformation())
+                    {
+
+                        if(position < card.getCardPosition())
+                        {
+                            card.setCardPosition(card.getCardPosition() - 1);
+                        }
+                    }
+                    this.notifyItemRemoved(position);
+                    GenerateLiquors.counter -=1;
+
                 }
             };
             Toast.makeText(getActivity(), "Second Time Loading list", Toast.LENGTH_SHORT).show();
@@ -223,7 +255,7 @@ public class MainMenu extends Fragment implements View.OnClickListener
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-       outState.putParcelableArrayList(LIQUORS_TAG, recyclerAdapter.getLiquorItems());
+       outState.putParcelableArrayList(LIQUORS_TAG, recyclerAdapter.getmCardInformation());
 
     }
 
@@ -270,33 +302,37 @@ public class MainMenu extends Fragment implements View.OnClickListener
                     this.mListener.OnFragmentChange(Fragments.MIXONTHESPOT);
                     break;
                 case R.id.floating_side_button_3:
-                    View viewTemp;
-                    this.recyclerAdapter.setModify(!this.recyclerAdapter.isModify());
+                    View viewTemp,viewTemp2;
+                    recyclerAdapter.setModify(!recyclerAdapter.isModify());
                     for (int i = 0; i < recyclerStaggeredView.getChildCount(); i++)
                     {
-                        viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.edit_mode_tag);
-                        if(((TextView)viewTemp).getText().equals("Edit Mode"))
-                        {
-                            ((TextView) viewTemp).setText("New");
-                            viewTemp.setBackgroundColor(Color.parseColor("#B2FF5252"));
-                        }
-                        else
-                        {
-                            ((TextView) viewTemp).setText("Edit Mode");
-                            viewTemp.setBackgroundResource(R.color.green_material_semi_transparent);
-                        }
+                       //textview viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.edit_mode_tag);
+
                       //  viewTemp.setVisibility(viewTemp.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
                         viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.imageLiquor);
-                        if(!this.recyclerAdapter.isModify())
-                            viewTemp.setClickable(false);
-                        else
-                            viewTemp.setClickable(true);
-                        viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.card_view);
-                        if(this.recyclerAdapter.isModify())
+                        if(!recyclerAdapter.isModify())
                             viewTemp.setClickable(false);
                         else
                             viewTemp.setClickable(true);
 
+
+                        viewTemp = recyclerStaggeredView.getChildAt(i).findViewById(R.id.card_view);
+                       //iewGroup.LayoutParams mAttributes = ((CardInformation)viewTemp.getTag()).getCardAttribute();
+                        //Textview
+                        viewTemp2 = recyclerStaggeredView.getChildAt(i).findViewById(R.id.edit_mode_tag);
+                        TextView mTextView =  (TextView) viewTemp2;
+                        if(recyclerAdapter.isModify())
+                        {
+                            viewTemp.setClickable(false);
+                            mTextView.setText("Edit Modes");
+                            mTextView.setBackgroundResource(R.color.green_material_semi_transparent);
+                        }
+                        else
+                        {
+                            viewTemp.setClickable(true);
+                            mTextView.setText(((CardInformation) viewTemp.getTag()).getRibbonLabel());
+                            mTextView.setBackgroundResource(((CardInformation) viewTemp.getTag()).getRibbonColorResource());
+                        }
                     }
                     break;
             }

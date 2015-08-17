@@ -1,13 +1,7 @@
 package com.faustus.mixins.build2.filechooser;
 
-import java.util.List;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.faustus.mixins.build2.R;
+import com.faustus.mixins.build2.loader.ImageLoader;
+
+import java.util.List;
 //import com.maurycyw.lazylist.staggeredgridviewlib.loader.ImageLoader;
 
 public class FileAdapter extends ArrayAdapter<Items>
@@ -24,7 +21,7 @@ public class FileAdapter extends ArrayAdapter<Items>
 	private static Context context;
 	private int layoutid;
 	private List<Items> mItems;
-	//ImageLoader mImageLoader = new ImageLoader(context);
+	ImageLoader mImageLoader;
 	private int scroll_State = -1;
 	private final int SCROLL_STATE_ONLOAD = -1;
 	public FileAdapter(Context context, int resource, List<Items> objects)
@@ -33,6 +30,7 @@ public class FileAdapter extends ArrayAdapter<Items>
 		FileAdapter.context = context;
 		mItems = objects;
 		layoutid = resource;
+		mImageLoader = new ImageLoader(context);
 	}
 	
 	public void scrollState(int state)
@@ -76,9 +74,9 @@ public class FileAdapter extends ArrayAdapter<Items>
 			viewholder.txtpath.setText(item.getImgPath());
 			
 			if(getScrollState() == AbsListView.OnScrollListener.SCROLL_STATE_IDLE || getScrollState() == SCROLL_STATE_ONLOAD)
-                ;
+
 				//viewholder.imgview.setImageBitmap(BitmapFactory.decodeFile(item.getImgPath()));
-				//mImageLoader.DisplayImage(item.getImgPath(), viewholder.imgview, item.getName());
+				mImageLoader.DisplayImage(item.getImgPath(), viewholder.imgview, item.getName());
 			
 		return view;
 	}

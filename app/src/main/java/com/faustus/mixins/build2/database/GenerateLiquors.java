@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.faustus.mixins.build2.R;
-import com.faustus.mixins.build2.model.Liquor;
+import com.faustus.mixins.build2.model.CardInformation;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,42 +18,43 @@ public class GenerateLiquors
     public static final int SMALL_TILE = 0;
     public static final int LONG_TILE = 1;
     public static final int BIG_TILE = 2;
-    private  ArrayList<Liquor> liquorlist;
+    private  ArrayList<CardInformation> cardInformations;
     private static boolean BigTile = false;
     private static int mExpectedTileType = -1;
     private static String[] materialPalette;
-    private static int counter = 0;
+    public static int counter = 0;
     private DB mDB;
     private static int mDBOffset = 0;
 
-    public GenerateLiquors(Activity activity,ArrayList<Liquor> liquorlist)
+    public GenerateLiquors(Activity activity,ArrayList<CardInformation> cardInformations)
    {
        mDB = new DB(activity);
-       this.liquorlist = liquorlist;
+       this.cardInformations = cardInformations;
        materialPalette = activity.getResources().getStringArray(R.array.material_palette);
-       if(this.liquorlist.size() == 0)
+       if(this.cardInformations.size() == 0)
             LoadMore();
 
    }
     public void LoadMore()
     {
-        mDBOffset = liquorlist.size();
-        mDB.select(mDBOffset, this.liquorlist);
-        RandomTileSize(this.liquorlist);
+        mDBOffset = cardInformations.size();
+        Log.i("OFFSET SIZE",mDBOffset +"");
+        mDB.select(mDBOffset, this.cardInformations);
+        RandomTileSize(this.cardInformations);
 
     }
 
-    private void RandomTileSize(ArrayList<Liquor>liquorlist)
+    private void RandomTileSize(ArrayList<CardInformation>cardInformations)
     {
 
-        for(;counter<liquorlist.size();counter++)
+        for(;counter<cardInformations.size();counter++)
         {
-            generateSize(liquorlist);
+            generateSize(cardInformations);
         }
 
     }
 
-    private void generateSize(ArrayList<Liquor> liquorlist)
+    private void generateSize(ArrayList<CardInformation> cardInformations)
     {
         if(mCurrentTileType == BIG_TILE || mExpectedTileType == -1 )
         {
@@ -68,9 +69,9 @@ public class GenerateLiquors
             case BIG_TILE:
                 mCurrentTileType = BIG_TILE;
                 BigTile = false;
-                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
-                liquorlist.get(counter).setTileColor(randomTileColor());
-                liquorlist.get(counter).setTileType(mCurrentTileType);
+                //cardInformations.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                cardInformations.get(counter).setTileColor(randomTileColor());
+                cardInformations.get(counter).setTileType(mCurrentTileType);
                 break;
 
             case SMALL_TILE:
@@ -82,9 +83,9 @@ public class GenerateLiquors
                     mExpectedTileType = LONG_TILE;
 
                 mCurrentTileType = SMALL_TILE;
-                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
-                liquorlist.get(counter).setTileColor(randomTileColor());
-                liquorlist.get(counter).setTileType(mCurrentTileType);
+                //cardInformations.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                cardInformations.get(counter).setTileColor(randomTileColor());
+                cardInformations.get(counter).setTileType(mCurrentTileType);
                 if(BigTile)
                     mExpectedTileType = BIG_TILE;
                 break;
@@ -95,9 +96,9 @@ public class GenerateLiquors
 
                 mExpectedTileType = SMALL_TILE;
                 mCurrentTileType = LONG_TILE;
-                //liquorlist.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
-                liquorlist.get(counter).setTileColor(randomTileColor());
-                liquorlist.get(counter).setTileType(mCurrentTileType);
+                //cardInformations.add(new Liquor("Liquor Number: " + counter, mCurrentTileType,randomTileColor()));
+                cardInformations.get(counter).setTileColor(randomTileColor());
+                cardInformations.get(counter).setTileType(mCurrentTileType);
                 break;
         }
     }

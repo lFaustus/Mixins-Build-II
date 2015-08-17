@@ -18,8 +18,7 @@ public class Liquor implements Parcelable
     private String Liquor_Picture_URL;
     private String Liquor_Description;
     private String DateAdded;
-    private int TileType;
-    private String TileColor;
+
     public final static String JSONDB_LIQUOR_NAME = "Name";
     public final static String JSONDB_LIQUOR_PIC_URL = "Image";
     public final static String JSONDB_LIQUOR_DESCRIPTION = "Description";
@@ -34,8 +33,7 @@ public class Liquor implements Parcelable
     public Liquor(String liquor_Name,int tileType,String tileColor)
     {
         this. Liquor_Name = liquor_Name;
-        this.TileType = tileType;
-        this.TileColor = tileColor;
+
     }
 
     public Liquor()
@@ -78,8 +76,7 @@ public class Liquor implements Parcelable
         this.Liquor_Description = parcel.readString();
         this.Liquor_Picture_URL = parcel.readString();
         this.DateAdded = parcel.readString();
-        this.TileType = parcel.readInt();
-        this.TileColor = parcel.readString();
+
     }
 
     public static final Parcelable.Creator<Liquor> CREATOR = new Creator<Liquor>()
@@ -137,25 +134,7 @@ public class Liquor implements Parcelable
         Liquor_Description = liquor_Description;
     }
 
-    public String getTileColor()
-    {
-        return TileColor;
-    }
 
-    public void setTileColor(String tileColor)
-    {
-        TileColor = tileColor;
-    }
-
-    public void setTileType(int tileType)
-    {
-        TileType = tileType;
-    }
-
-    public int getTileType()
-    {
-        return TileType;
-    }
 
     public String getDateAdded()
     {
@@ -176,8 +155,7 @@ public class Liquor implements Parcelable
         dest.writeString(Liquor_Description);
         dest.writeString(Liquor_Picture_URL);
         dest.writeString(DateAdded);
-        dest.writeInt(TileType);
-        dest.writeString(TileColor);
+
     }
 
 }

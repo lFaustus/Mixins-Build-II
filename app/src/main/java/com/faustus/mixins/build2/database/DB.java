@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.faustus.mixins.build2.R;
+import com.faustus.mixins.build2.model.CardInformation;
 import com.faustus.mixins.build2.model.Liquor;
 
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public class DB
                 {
                     mContentValues.put(DBhelper.mTableColumns[1], param.toString());
                     db.insertOrThrow(DBhelper.mTableName, null, mContentValues);
+                    Log.i("SUCCESS","SUCC");
                 }
             }
            // db.setTransactionSuccessful();
@@ -63,9 +65,9 @@ public class DB
         SQLiteDatabase db = mDbHelper.openToWriteDB();
         try
         {
-            if(params[0] instanceof  JSONObject)
+            //if(params[0] instanceof  JSONObject)
                 db.delete(DBhelper.mTableName,DBhelper.mTableColumns[1]+" like '%" + params[0].toString() + "%'; ",null);
-            //db.setTransactionSuccessful();
+
         }
         catch (Exception exp)
         {
@@ -78,12 +80,13 @@ public class DB
 
     }
 
-    public void select(int offset, ArrayList<Liquor> liquorlist)
+    public void select(int offset, ArrayList<CardInformation> cardInformations)
     {
         SQLiteDatabase db = mDbHelper.openToReadDB();
         //Cursor cursor = db.query(DBhelper.mTableName, DBhelper.mTableColumns, null, null, null, null, null, "LIMIT 10 OFFSET 10");
         Cursor cursor =  db.rawQuery("Select * from " + DBhelper.mTableName +" LIMIT 10 OFFSET " + offset,null);
         Liquor mTempLiquor;
+        CardInformation mTempInfo;
         JSONObject mJsonObject;
         while(cursor.moveToNext())
         {
@@ -92,7 +95,8 @@ public class DB
                 mJsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(this.getDBColumns()[1])));
                 mTempLiquor = new Liquor(mJsonObject);
                 mTempLiquor.setLiquorId(cursor.getInt(cursor.getColumnIndex(this.getDBColumns()[0])));
-                liquorlist.add(mTempLiquor);
+                mTempInfo = new CardInformation(mTempLiquor);
+                cardInformations.add(mTempInfo);
             }
             catch (JSONException e)
             {

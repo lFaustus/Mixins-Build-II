@@ -18,7 +18,7 @@ public class MixOnTheSpot extends CreateLiquor{
     {
         MixOnTheSpot fragment = new MixOnTheSpot();
         Bundle args = new Bundle();
-        args.putString(CreateLiquor.FRAGMENT_TAG,param);
+        args.putString(CreateLiquor.FRAGMENT_TAG, param);
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,4 +31,9 @@ public class MixOnTheSpot extends CreateLiquor{
         ((Button)getView().findViewById(R.id.button_drinks)).setText("Mix");
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        //Implement some functions
+    }
 }

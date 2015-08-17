@@ -12,6 +12,7 @@
     <color name="material_lightblue">#5588FF</color>
     <color name="material_gray">#CCCCCC</color>
     <color name="green_material_semi_transparent">#B24CAF50</color>
+    <color name="red_material_semi_transparent">#B2FF5252</color>
     <string-array name="material_palette">
         <item>#B23F51B5</item>
         <item>#B2FF5252</item>
