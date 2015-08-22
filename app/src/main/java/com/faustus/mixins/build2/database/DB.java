@@ -66,7 +66,9 @@ public class DB
         try
         {
             //if(params[0] instanceof  JSONObject)
-                db.delete(DBhelper.mTableName,DBhelper.mTableColumns[1]+" like '%" + params[0].toString() + "%'; ",null);
+                //db.delete(DBhelper.mTableName,DBhelper.mTableColumns[1]+" like '%" + params[0].toString() + "%'; ",null);
+            db.delete(DBhelper.mTableName,DBhelper.mTableColumns[0] +" =" +params[0].toString() +";" ,null);
+           // db.delete(DBhelper.mTableName,DBhelper.mTableColumns[0] ,new String[]{params[0].toString()});
 
         }
         catch (Exception exp)
@@ -95,6 +97,7 @@ public class DB
                 mJsonObject = new JSONObject(cursor.getString(cursor.getColumnIndex(this.getDBColumns()[1])));
                 mTempLiquor = new Liquor(mJsonObject);
                 mTempLiquor.setLiquorId(cursor.getInt(cursor.getColumnIndex(this.getDBColumns()[0])));
+                Log.i("Liquor ID",mTempLiquor.getLiquorId()+"");
                 mTempInfo = new CardInformation(mTempLiquor);
                 cardInformations.add(mTempInfo);
             }

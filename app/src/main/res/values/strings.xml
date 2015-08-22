@@ -12,8 +12,8 @@
         <item>Description</item>
     </string-array>
 
-
-
     <string name="listviewitem_default_value">N/A</string>
+    <string name="liquor_label_default_value">Add Liquor</string>
+    <string name="shared_preference_name">TheBarPreferences</string>
 
 </resources>

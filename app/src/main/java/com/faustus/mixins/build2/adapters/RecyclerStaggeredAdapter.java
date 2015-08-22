@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,8 +55,9 @@ public abstract class RecyclerStaggeredAdapter extends RecyclerView.Adapter<Recy
         context = activity;
        // mBitmapManager = new BitmapManager(activity);
         mImageLoader = new ImageLoader(activity);
-        if(mCardInformation == null)
-            mCardInformation =  new ArrayList<>();
+        //if(mCardInformation == null)
+          //  mCardInformation =  new ArrayList<>();
+        Log.e("CardSize", mCardInformation.size() + "");
         mGenerateLiquors = new GenerateLiquors(context, mCardInformation);
         windowMetrics = context.getResources().getDisplayMetrics();
         //mDB = new DB(activity);

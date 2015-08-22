@@ -90,7 +90,8 @@ public class CardInformation implements Parcelable
 
     private CardInformation(Parcel in)
     {
-        this.mObjectArray = in.readArray(ClassLoader.getSystemClassLoader());
+        //this.mObjectArray = in.readArray(ClassLoader.getSystemClassLoader());
+        this.mObjectArray[0] = in.readValue(ClassLoader.getSystemClassLoader());
         this.TileType = in.readInt();
         this.TileColor =in.readString();
         this.mRibbonLabel = in.readString();
@@ -123,7 +124,8 @@ public class CardInformation implements Parcelable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeArray(this.mObjectArray);
+        //dest.writeArray(this.mObjectArray);
+        dest.writeValue(this.mObjectArray[0]);
         dest.writeInt(TileType);
         dest.writeString(TileColor);
         dest.writeString(mRibbonLabel);

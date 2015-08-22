@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:text="Vodka"
+                    android:text="@string/liquor_label_default_value"
                     android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
@@ -179,100 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:text="Triple Sec"
-                    android:textColor="@color/material_gray"
-                    android:textSize="15sp"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.faustus.mixins.build2.circularseekbar.CircularSeekBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:circle_color="@color/material_gray"
-                    app:circle_progress_color="@color/material_lightblue"
-                    app:circle_stroke_width="8"
-                    app:circle_x_radius="110"
-                    app:circle_y_radius="110"
-                    app:end_angle="60"
-                    app:lock_enabled="true"
-                    app:max="200"
-                    app:pointer_alpha_ontouch="100"
-                    app:pointer_color="#0174DF"
-                    app:pointer_halo_color="#880174DF"
-                    app:start_angle="120"
-                    app:use_custom_radii="true"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:tag="measurement"
-                    android:text="0ml"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/material_gray"
-                    android:textSize="30sp"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:clickable="true"
-                    android:text="Gin"
-                    android:textColor="@color/material_gray"
-                    android:textSize="15sp"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.faustus.mixins.build2.circularseekbar.CircularSeekBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:circle_color="@color/material_gray"
-                    app:circle_progress_color="@color/material_lightblue"
-                    app:circle_stroke_width="8"
-                    app:circle_x_radius="110"
-                    app:circle_y_radius="110"
-                    app:end_angle="60"
-                    app:lock_enabled="true"
-                    app:max="200"
-                    app:pointer_alpha_ontouch="100"
-                    app:pointer_color="#0174DF"
-                    app:pointer_halo_color="#880174DF"
-                    app:start_angle="120"
-                    app:use_custom_radii="true"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:tag="measurement"
-                    android:text="0ml"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/material_gray"
-                    android:textSize="30sp"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:clickable="true"
-                    android:text="Lime Juice"
+                    android:text="@string/liquor_label_default_value"
                     android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
@@ -322,7 +229,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:text="Beer"
+                    android:text="@string/liquor_label_default_value"
                     android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>
@@ -365,7 +272,100 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:clickable="true"
-                    android:text="Tequila"
+                    android:text="@string/liquor_label_default_value"
+                    android:textColor="@color/material_gray"
+                    android:textSize="15sp"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.faustus.mixins.build2.circularseekbar.CircularSeekBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
+                    app:circle_stroke_width="8"
+                    app:circle_x_radius="110"
+                    app:circle_y_radius="110"
+                    app:end_angle="60"
+                    app:lock_enabled="true"
+                    app:max="200"
+                    app:pointer_alpha_ontouch="100"
+                    app:pointer_color="#0174DF"
+                    app:pointer_halo_color="#880174DF"
+                    app:start_angle="120"
+                    app:use_custom_radii="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:tag="measurement"
+                    android:text="0ml"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/material_gray"
+                    android:textSize="30sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:clickable="true"
+                    android:text="@string/liquor_label_default_value"
+                    android:textColor="@color/material_gray"
+                    android:textSize="15sp"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.faustus.mixins.build2.circularseekbar.CircularSeekBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:circle_color="@color/material_gray"
+                    app:circle_progress_color="@color/material_lightblue"
+                    app:circle_stroke_width="8"
+                    app:circle_x_radius="110"
+                    app:circle_y_radius="110"
+                    app:end_angle="60"
+                    app:lock_enabled="true"
+                    app:max="200"
+                    app:pointer_alpha_ontouch="100"
+                    app:pointer_color="#0174DF"
+                    app:pointer_halo_color="#880174DF"
+                    app:start_angle="120"
+                    app:use_custom_radii="true"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:tag="measurement"
+                    android:text="0ml"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/material_gray"
+                    android:textSize="30sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:clickable="true"
+                    android:text="@string/liquor_label_default_value"
                     android:textColor="@color/material_gray"
                     android:textSize="15sp"/>
             </FrameLayout>

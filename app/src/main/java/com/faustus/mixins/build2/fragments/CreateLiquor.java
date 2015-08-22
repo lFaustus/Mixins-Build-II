@@ -4,9 +4,14 @@ package com.faustus.mixins.build2.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,11 +62,15 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
     private ListView mListView;
     private Map<Bottle, TextView> mTextViewSeekBarValue = Collections.synchronizedMap(new HashMap<>());
     private Map<String, String> mOrder = Collections.synchronizedMap(new LinkedHashMap<>());
+    protected Map<Bottle,String> mCurrentBottleSettings = Collections.synchronizedMap(new LinkedHashMap<Bottle, String>());
     private int mCounter = 0;
     protected Bottle[] mBottle;
     private ImageView imgView;
     private DB mDB;
     private JSONArray mJSONArrayLiquorOrder;
+    protected EditText mEditText;
+    protected TextView mTextView;
+    protected SharedPreferences sp;
 
 
 
@@ -98,6 +107,8 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sp = getActivity().getSharedPreferences(getActivity().getResources().getString(R.string.shared_preference_name), Context.MODE_PRIVATE);
+        sp.edit().apply();
         if(!mParam1.equals(Fragments.MIXONTHESPOT.getTAG())) {
 
             mListViewLabels = getActivity().getResources().getStringArray(R.array.list_items);
@@ -108,7 +119,9 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
             mBottle = Bottle.values();
             //ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
            ViewGroup vg = (ViewGroup)getView().getRootView();
-            initializeViews(vg);
+        checkCurrentBottle();
+        initializeViews(vg);
+
 
     }
 
@@ -123,6 +136,16 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
                imgView.setImageBitmap(BitmapFactory.decodeFile(mImageLocation));
             }
     }
+
+
+    private void checkCurrentBottle()
+    {
+        for(Bottle b: mBottle)
+        {
+            mCurrentBottleSettings.put(b,sp.getString(b.name(),getActivity().getResources().getString(R.string.liquor_label_default_value)));
+        }
+    }
+
 
     private void initializeViews(ViewGroup vg) {
         try {
@@ -143,9 +166,16 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
 
                     }
                    else  if (vg.getChildAt(i) instanceof TextView) {
-                        vg.getChildAt(i).setOnClickListener(this);
+
                         if (vg.getChildAt(i).getTag() != null) {
                             mTextViewSeekBarValue.put(mBottle[mCounter], (TextView) vg.getChildAt(i));
+
+                        }
+                        else
+                        {
+                            vg.getChildAt(i).setOnClickListener(this);
+                            vg.getChildAt(i).setTag(mBottle[mCounter]);
+                            ((TextView) vg.getChildAt(i)).setText(mCurrentBottleSettings.get(mBottle[mCounter]));
                             mCounter++;
                         }
 
@@ -185,7 +215,11 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
                             mJSONObjectLiquor.put(Liquor.JSONDB_LIQUOR_PIC_URL, mImageLocation);
                             for(Map.Entry<String,String> map: mOrder.entrySet())
                             {
-                                mJSONObjectLiquor.put(map.getKey(), map.getValue());
+
+                                if(!map.getKey().contains(BOTTLE_VOLUME))
+                                    mJSONObjectLiquor.put(map.getKey(),mCurrentBottleSettings.get(Bottle.valueOf(map.getKey())));
+                                else
+                                    mJSONObjectLiquor.put(map.getKey(), map.getValue());
                             }
                             mJSONObjectLiquor.put("Order", mJSONArrayLiquorOrder);
                             String mDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(new Date());
@@ -202,6 +236,27 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
                             v.setEnabled(true);
                         }
                         break;
+
+                    default:
+                        //PopUpDialog(view,parent,position);
+                        View dialogView = PopupDialoglayoutCreator();
+                        mTextView = (TextView)v;
+                        mEditText.setHint("Liquor Name Here");
+                        AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(getActivity())
+                                .setView(dialogView)
+                                .setPositiveButton("OK", (dialog, which) ->
+                                {
+                                    mTextView.setText(mEditText.getText());
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    Bottle b = (Bottle)v.getTag();
+                                    editor.putString(b.name(),((TextView)v).getText().toString());
+                                    editor.commit();
+                                    mCurrentBottleSettings.put(b,((TextView)v).getText().toString());
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                                .setCancelable(true);
+                        mAlertBuilder.create().show();
+                        break;
                 }
     }
 
@@ -209,7 +264,7 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         //Log.i("itemClick", parent.getItemAtPosition(position).toString());
-        View mView = LayoutInflater.from(getActivity()).inflate(R.layout.liquor_dialog,null);
+        /*View mView = LayoutInflater.from(getActivity()).inflate(R.layout.liquor_dialog,null);
         final TextView mTextView = (TextView)view.findViewById(R.id.listview_value_listitem);
         final EditText mEditText =(EditText)mView.findViewById(R.id.liquor_dialog_editText);
         mEditText.setHint(parent.getItemAtPosition(position).toString() + " Here");
@@ -218,7 +273,25 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
                             .setPositiveButton("OK", (dialog, which) -> mTextView.setText(mEditText.getText()))
                             .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                             .setCancelable(true);
-                            mAlertBuilder.create().show();
+                            mAlertBuilder.create().show();*/
+        //PopUpDialog(view,parent,position);
+        View dialogView = PopupDialoglayoutCreator();
+        mTextView = (TextView) view.findViewById(R.id.listview_value_listitem);
+        mEditText.setHint(parent.getItemAtPosition(position).toString() + " Here");
+        AlertDialog.Builder mAlertBuilder = new AlertDialog.Builder(getActivity())
+                .setView(dialogView)
+                .setPositiveButton("OK", (dialog, which) -> mTextView.setText(mEditText.getText()))
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .setCancelable(true);
+        mAlertBuilder.create().show();
+    }
+
+
+    public View PopupDialoglayoutCreator()
+    {
+        View mView = LayoutInflater.from(getActivity()).inflate(R.layout.liquor_dialog,null);
+        mEditText = (EditText)mView.findViewById(R.id.liquor_dialog_editText);
+        return mView;
     }
 
     /*
