@@ -3,21 +3,25 @@ package com.faustus.mixins.build2.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.faustus.mixins.build2.Bottle;
+import com.faustus.mixins.build2.fragments.MainMenu;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by flux on 5/26/15.
  */
 public class Liquor implements Parcelable
 {
-
-
     private int Liquor_Id;
-    private String Liquor_Name;
+    /*private String Liquor_Name;
     private String Liquor_Picture_URL;
     private String Liquor_Description;
     private String DateAdded;
+    private List<String> Ingredients;*/
 
     public final static String JSONDB_LIQUOR_NAME = "Name";
     public final static String JSONDB_LIQUOR_PIC_URL = "Image";
@@ -25,61 +29,29 @@ public class Liquor implements Parcelable
     public final static String JSONDB_LIQUOR_DATE_ADDED = "DateAdded";
     private JSONObject JSONLiquor;
 
-    public Liquor(String liquor_Name)
+
+
+    public Liquor(JSONObject JSONLiquors)
     {
-        this.Liquor_Name = liquor_Name;
-    }
-
-    public Liquor(String liquor_Name,int tileType,String tileColor)
-    {
-        this. Liquor_Name = liquor_Name;
-
-    }
-
-    public Liquor()
-    {
-
-    }
-
-    public Liquor(JSONObject JSONLiquor)
-    {
-        //Log.i("JSON", JSONLiquor.toString());
-
-        this.JSONLiquor = JSONLiquor;
-        try
-        {
-            this.Liquor_Name = JSONLiquor.getString(JSONDB_LIQUOR_NAME);
-            this.Liquor_Description = JSONLiquor.getString(JSONDB_LIQUOR_DESCRIPTION);
-            this.Liquor_Picture_URL = JSONLiquor.getString(JSONDB_LIQUOR_PIC_URL);
-            this.DateAdded = JSONLiquor.getString(JSONDB_LIQUOR_DATE_ADDED);
-
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-
-        }
-       // Log.i("JSONDATE", this.DateAdded+"");
+        this.JSONLiquor = JSONLiquors;
     }
 
 
     private Liquor(Parcel parcel)
     {
-       /* try
+        Liquor_Id = parcel.readInt();
+
+        try
         {
-            this.JSONLiquor = new JSONObject(parcel.readString());
-        } catch (JSONException e)
+            JSONLiquor = new JSONObject(parcel.readString());
+        }
+        catch (JSONException e)
         {
             e.printStackTrace();
-        }*/
-        this.Liquor_Name = parcel.readString();
-        this.Liquor_Description = parcel.readString();
-        this.Liquor_Picture_URL = parcel.readString();
-        this.DateAdded = parcel.readString();
-
+        }
     }
 
-    public static final Parcelable.Creator<Liquor> CREATOR = new Creator<Liquor>()
+    public static final Creator<Liquor> CREATOR = new Creator<Liquor>()
     {
         @Override
         public Liquor createFromParcel(Parcel in)
@@ -104,42 +76,44 @@ public class Liquor implements Parcelable
         Liquor_Id = liquor_Id;
     }
 
-    public String getLiquorName()
+    public String getDateAdded() throws JSONException
     {
-        return Liquor_Name;
+        return this.JSONLiquor.getString(JSONDB_LIQUOR_DATE_ADDED);
     }
 
-    public void setLiquorName(String liquor_Name)
+    public ArrayList<String> getIngredients()
     {
-        Liquor_Name = liquor_Name;
+        ArrayList<String> Ingredients  = new ArrayList<>();
+        for(Bottle b:MainMenu.getBottles())
+        {
+
+            try
+            {
+                Ingredients.add(this.JSONLiquor.getString(b.name()));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return Ingredients;
     }
 
-    public String getLiquorPictureURL()
+    public String getLiquorPictureURI() throws JSONException
     {
-        return Liquor_Picture_URL;
+       return this.JSONLiquor.getString(JSONDB_LIQUOR_PIC_URL);
     }
 
-    public void setLiquorPictureURL(String liquor_Picture_URL)
+    public String getLiquorName() throws JSONException
     {
-        Liquor_Picture_URL = liquor_Picture_URL;
+        return this.JSONLiquor.getString(JSONDB_LIQUOR_NAME);
     }
 
-    public String getLiquorDescription()
+    public String  getLiquorDescription() throws JSONException
     {
-        return Liquor_Description;
+        return this.JSONLiquor.getString(JSONDB_LIQUOR_DESCRIPTION);
     }
 
-    public void setLiquorDescription(String liquor_Description)
-    {
-        Liquor_Description = liquor_Description;
-    }
-
-
-
-    public String getDateAdded()
-    {
-        return DateAdded;
-    }
 
     @Override
     public int describeContents()
@@ -150,12 +124,7 @@ public class Liquor implements Parcelable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-       // dest.writeString(JSONLiquor.toString());
-        dest.writeString(Liquor_Name);
-        dest.writeString(Liquor_Description);
-        dest.writeString(Liquor_Picture_URL);
-        dest.writeString(DateAdded);
-
+        dest.writeInt(this.getLiquorId());
+        dest.writeString(this.JSONLiquor.toString());
     }
-
 }

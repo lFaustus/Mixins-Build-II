@@ -1,26 +1,25 @@
 package com.faustus.mixins.build2.filechooser;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView.RecyclerListener;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.faustus.mixins.build2.R;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 //import com.faustus.mixins.filechooser.FileAdapter.ViewHolder;
 
 public class FileChooser extends ListActivity
@@ -85,6 +84,7 @@ public class FileChooser extends ListActivity
 		super.onListItemClick(l, v, position, id);
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra("Image", mAdapter.getItem(position).imgPath);
+		Bundle b = new Bundle();
 		setResult(RESULT_OK,returnIntent);
 		finish();
 		
@@ -105,7 +105,21 @@ public class FileChooser extends ListActivity
 		List<Items> item = new ArrayList<Items>();
 		for(File file:pictures)
 		{
-			item.add(new Items(file.getName(),file.getPath()));
+			try
+			{
+				Log.e("canonical",file.getCanonicalPath()+"");
+				Log.e("path",file.getPath());
+				Log.e("Absolute",file.getAbsolutePath());
+				Log.e("File",file.toString());
+				Log.e("URIgetpath",file.toURI().getPath());
+				Log.e("URL",file.toURI().toURL().toString());
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			item.add(new Items(file.getName(),file.toURI().toString()));
 		}
 		Collections.sort(item);
 		mAdapter = new FileAdapter(this, R.layout.filechooser_items, item);

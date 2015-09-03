@@ -4,14 +4,10 @@ package com.faustus.mixins.build2.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -70,7 +68,7 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
     private JSONArray mJSONArrayLiquorOrder;
     protected EditText mEditText;
     protected TextView mTextView;
-    protected SharedPreferences sp;
+    protected  SharedPreferences sp;
 
 
 
@@ -107,8 +105,7 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sp = getActivity().getSharedPreferences(getActivity().getResources().getString(R.string.shared_preference_name), Context.MODE_PRIVATE);
-        sp.edit().apply();
+
         if(!mParam1.equals(Fragments.MIXONTHESPOT.getTAG())) {
 
             mListViewLabels = getActivity().getResources().getStringArray(R.array.list_items);
@@ -116,10 +113,11 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
             mListView.setOnItemClickListener(this);
             mDB = new DB(getActivity());
         }
-            mBottle = Bottle.values();
+            mBottle = MainMenu.getBottles();
+            sp = MainMenu.getSharedPreferences();
+            mCurrentBottleSettings = MainMenu.getCurrentBottleSettings();
             //ViewGroup vg = (ViewGroup) getView().findViewWithTag(VIEWGROUP_CSEEKBAR_TAG);
            ViewGroup vg = (ViewGroup)getView().getRootView();
-        checkCurrentBottle();
         initializeViews(vg);
 
 
@@ -133,19 +131,17 @@ public class CreateLiquor extends Fragment implements View.OnClickListener,ListV
             if(resultCode == Activity.RESULT_OK)
             {
                 mImageLocation = data.getStringExtra("Image");
-               imgView.setImageBitmap(BitmapFactory.decodeFile(mImageLocation));
+                try
+                {
+                    imgView.setImageBitmap(BitmapFactory.decodeFile(new URI(mImageLocation).getPath()));
+                }
+                catch (URISyntaxException e)
+                {
+                    e.printStackTrace();
+                    imgView.setImageBitmap(null);
+                }
             }
     }
-
-
-    private void checkCurrentBottle()
-    {
-        for(Bottle b: mBottle)
-        {
-            mCurrentBottleSettings.put(b,sp.getString(b.name(),getActivity().getResources().getString(R.string.liquor_label_default_value)));
-        }
-    }
-
 
     private void initializeViews(ViewGroup vg) {
         try {

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class ImageLoader {
         executorService=Executors.newFixedThreadPool(5);
         this.context = context;
     }
-    
+
     public ImageLoader(){}
     
 //    final int stub_id= android.R.drawable.alert_dark_frame;
@@ -62,7 +63,8 @@ public class ImageLoader {
             
         else
         {
-            queuePhoto(url, imageView,imgWidth,imgHeight);
+            queuePhoto(url, imageView, imgWidth, imgHeight);
+
             imageView.setScaleType(ScaleType.FIT_XY);
             /*
              * serves as placeholder(image to be shown while waiting for the decoded image to be loaded)
@@ -85,7 +87,7 @@ public class ImageLoader {
     	}
     	else
     	{
-    		 queuePhoto(imgbyte, imageView,imgWidth,imgHeight,name);
+    		 queuePhoto(imgbyte, imageView, imgWidth, imgHeight, name);
              imageView.setScaleType(ScaleType.FIT_XY);
              /*
               * serves as placeholder(image to be shown while waiting for the decoded image to be loaded)
@@ -133,13 +135,14 @@ public class ImageLoader {
     	}
     	else
     	{
-    		 queuePhoto(url, imageView,name);
+    		 queuePhoto(url, imageView, name);
+            Log.d("Yeah", "yeah4");
              imageView.setScaleType(ScaleType.FIT_XY);
              /*
               * serves as placeholder(image to be shown while waiting for the decoded image to be loaded)
               */
-             //imageView.setBackgroundResource(R.drawable.pic4);
-              imageView.setImageBitmap(null);
+             imageView.setBackgroundResource(R.drawable.hello);
+             // imageView.setImageBitmap(null);
     	}
     	
     }
@@ -203,7 +206,6 @@ public class ImageLoader {
     private Bitmap getBitmap(PhotoToLoad photo) 
     {
         File f=fileCache.getFile(photo.url);
-        
         //from SD cache
         Bitmap b = decodeFile(f);
         if(b!=null)
@@ -220,11 +222,13 @@ public class ImageLoader {
         try
         {
         	Bitmap bitmap = null;
-        	InputStream is = new FileInputStream(photo.url);
+            URI a = new URI(photo.url);
+        	InputStream is = new FileInputStream(new File(a));
         	OutputStream os = new FileOutputStream(f);
             Utils.CopyStream(is, os);
             os.close();
             bitmap = decodeFile(f);
+
             //bitmap = Picasso.with(context).load(photo.url).get();
             return bitmap;
         	
@@ -274,7 +278,7 @@ public class ImageLoader {
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             FileInputStream stream1=new FileInputStream(f);
-            BitmapFactory.decodeStream(stream1,null,o);
+            BitmapFactory.decodeStream(stream1, null, o);
             stream1.close();
             
             //Find the correct scale value. It should be the power of 2.
@@ -298,6 +302,7 @@ public class ImageLoader {
             o2.inSampleSize=scale;
             FileInputStream stream2=new FileInputStream(f);
             Bitmap bitmap=BitmapFactory.decodeStream(stream2, null, o2);
+
             stream2.close();
             return bitmap;
         } catch (FileNotFoundException e) {
@@ -368,6 +373,7 @@ public class ImageLoader {
              o2.inSampleSize=scale;
              FileInputStream stream2=new FileInputStream(f);
              Bitmap bitmap=BitmapFactory.decodeStream(stream2, null, o2);
+
              stream2.close();
              return bitmap;
          } catch (FileNotFoundException e) {
@@ -411,7 +417,7 @@ public class ImageLoader {
         private byte[] imgbyte;
         private String hashcode;
         private String name;
-        
+
         public PhotoToLoad(String u, ImageView i,int imgWidth,int imgHeight){
             url=u; 
             imageView=i;
@@ -458,12 +464,18 @@ public class ImageLoader {
         public void run() {
             try{
                 if(imageViewReused(photoToLoad))
+                {
+                    Log.d("Yeah", "yeah1");
                     return;
+                }
                 Bitmap bmp=getBitmap(photoToLoad);
                 //String imageViewidentifier =String.valueOf(photoToLoad.imgbyte.hashCode()); 
                 memoryCache.put(photoToLoad.url, bmp);
                 if(imageViewReused(photoToLoad))
+                {
+                    Log.d("Yeah", "yeah2");
                     return;
+                }
                 BitmapDisplayer bd=new BitmapDisplayer(bmp, photoToLoad);
                 handler.post(bd);
                
@@ -476,7 +488,10 @@ public class ImageLoader {
     boolean imageViewReused(PhotoToLoad photoToLoad){
         String tag=imageViews.get(photoToLoad.imageView);
         if(tag==null || !tag.equals(photoToLoad.url))
+        {
+            Log.d("Yeah", "reused");
             return true;
+        }
         return false;
     }
     
@@ -489,7 +504,10 @@ public class ImageLoader {
         public void run()
         {
             if(imageViewReused(photoToLoad))
+            {
+                Log.d("Yeah", "yeah3");
                 return;
+            }
             if(bitmap!=null)
                 photoToLoad.imageView.setImageBitmap(bitmap);
             else

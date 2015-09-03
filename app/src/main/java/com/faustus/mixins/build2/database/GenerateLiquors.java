@@ -32,7 +32,12 @@ public class GenerateLiquors
        this.cardInformations = cardInformations;
        materialPalette = activity.getResources().getStringArray(R.array.material_palette);
        if(this.cardInformations.size() == 0)
-            LoadMore();
+       {
+           counter = 0;
+           mCurrentTileType = -1;
+           mExpectedTileType = -1;
+           LoadMore();
+       }
 
    }
     public void LoadMore()

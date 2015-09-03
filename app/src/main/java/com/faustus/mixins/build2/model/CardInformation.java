@@ -15,6 +15,7 @@ public class CardInformation implements Parcelable
     private String mRibbonColor;
     private int mRibbonColorResource;
     private int mCardPosition;
+    private boolean mCardAvailable;
 
 
     public CardInformation(Object... params)
@@ -88,6 +89,16 @@ public class CardInformation implements Parcelable
         mCardPosition = cardPosition;
     }
 
+    public boolean isCardAvailable()
+    {
+        return mCardAvailable;
+    }
+
+    public void setCardAvailable(boolean mCardAvailable)
+    {
+        this.mCardAvailable = mCardAvailable;
+    }
+
     private CardInformation(Parcel in)
     {
         //this.mObjectArray = in.readArray(ClassLoader.getSystemClassLoader());
@@ -98,6 +109,7 @@ public class CardInformation implements Parcelable
         this.mRibbonColor = in.readString();
         this.mRibbonColorResource = in.readInt();
         this.mCardPosition = in.readInt();
+        this.mCardAvailable = (boolean)in.readValue(ClassLoader.getSystemClassLoader());
     }
 
     public static final Creator<CardInformation> CREATOR = new Creator<CardInformation>()
@@ -132,5 +144,6 @@ public class CardInformation implements Parcelable
         dest.writeString(mRibbonColor);
         dest.writeInt(mRibbonColorResource);
         dest.writeInt(mCardPosition);
+        dest.writeValue(mCardAvailable);
     }
 }
